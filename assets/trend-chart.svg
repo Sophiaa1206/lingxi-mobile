@@ -1,0 +1,29 @@
+<svg width="264" height="172" viewBox="0 0 264 172" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="264" height="172" rx="16" fill="#F7F8FA"/>
+  <rect x="16" y="16" width="232" height="140" rx="12" fill="white" stroke="#E8E8EC"/>
+  <text x="30" y="42" fill="#252529" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="16">销售趋势</text>
+  <text x="30" y="62" fill="#747781" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="11">近 6 周销售额</text>
+  <path d="M36 126H226" stroke="#E8E8EC" stroke-width="1"/>
+  <path d="M36 100H226" stroke="#E8E8EC" stroke-width="1"/>
+  <path d="M36 74H226" stroke="#E8E8EC" stroke-width="1"/>
+  <path d="M50 118L82 106L114 111L146 86L178 76L214 52" stroke="#17181C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M50 118L82 106L114 111L146 86L178 76L214 52V126H50V118Z" fill="url(#trendFill)"/>
+  <g fill="white" stroke="#17181C" stroke-width="2">
+    <circle cx="50" cy="118" r="4"/>
+    <circle cx="82" cy="106" r="4"/>
+    <circle cx="114" cy="111" r="4"/>
+    <circle cx="146" cy="86" r="4"/>
+    <circle cx="178" cy="76" r="4"/>
+    <circle cx="214" cy="52" r="4"/>
+  </g>
+  <text x="42" y="143" fill="#8C8F98" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="10">W1</text>
+  <text x="106" y="143" fill="#8C8F98" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="10">W3</text>
+  <text x="172" y="143" fill="#8C8F98" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="10">W5</text>
+  <text x="204" y="143" fill="#8C8F98" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="10">W6</text>
+  <defs>
+    <linearGradient id="trendFill" x1="132" y1="52" x2="132" y2="126" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17181C" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#17181C" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

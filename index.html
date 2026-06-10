@@ -1,0 +1,2955 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>灵犀移动端会话主界面原型</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17181c;
+        --muted: #747781;
+        --line: #e8e8ec;
+        --panel: #ffffff;
+        --soft: #f7f8fa;
+        --soft-2: #f3f4f6;
+        --accent: #17181c;
+        --accent-soft: #f3f4f6;
+        --accent-ink: #3f4147;
+        --success: #247b54;
+        --warning: #a86a00;
+        --danger: #d64d43;
+        --shadow: 0 22px 56px rgba(26, 30, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #f4f5f7;
+        color: var(--ink);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+      }
+
+      button,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        color: inherit;
+        background: none;
+        cursor: pointer;
+      }
+
+      .workspace {
+        width: min(100%, 1560px);
+        margin: 0 auto;
+        padding: 30px 24px 42px;
+      }
+
+      .page-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 760;
+        letter-spacing: 0;
+      }
+
+      .page-note {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        color: #4b4b4b;
+        font-size: 12px;
+      }
+
+      .prototype-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(352px, 1fr));
+        gap: 28px;
+        align-items: start;
+      }
+
+      .frame-wrap {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+      }
+
+      .frame-title {
+        width: 100%;
+        max-width: 378px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: #3d3d3f;
+        font-size: 14px;
+        font-weight: 680;
+      }
+
+      .priority {
+        color: var(--accent-ink);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .phone {
+        position: relative;
+        width: min(100%, 378px);
+        height: 840px;
+        display: grid;
+        grid-template-rows: 48px 58px minmax(0, 1fr) auto;
+        overflow: hidden;
+        border: 1px solid rgba(23, 23, 23, 0.07);
+        border-radius: 0;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .phone.compact {
+        height: 590px;
+      }
+
+      .phone * {
+        font-weight: 400;
+      }
+
+      .statusbar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        padding: 0 12px;
+        background: #fff;
+        color: #202124;
+        font-size: 13.2px;
+        line-height: 1;
+      }
+
+      .statusbar > span:first-child {
+        padding-left: 2ch;
+      }
+
+      .status-icons {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .signal {
+        display: inline-flex;
+        align-items: end;
+        gap: 1px;
+        height: 12px;
+      }
+
+      .signal i {
+        width: 2px;
+        border-radius: 1px;
+        background: currentColor;
+      }
+
+      .signal i:nth-child(1) { height: 5px; }
+      .signal i:nth-child(2) { height: 7px; }
+      .signal i:nth-child(3) { height: 10px; }
+      .signal i:nth-child(4) { height: 12px; }
+
+      .wifi {
+        width: 17px;
+        height: 12px;
+        display: block;
+      }
+
+      .battery {
+        position: relative;
+        width: 24px;
+        height: 12px;
+        border: 1.6px solid currentColor;
+        border-radius: 3px;
+      }
+
+      .battery::before {
+        content: "";
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        width: 16px;
+        height: 5px;
+        border-radius: 1px;
+        background: currentColor;
+      }
+
+      .battery::after {
+        content: "";
+        position: absolute;
+        right: -4px;
+        top: 3px;
+        width: 2px;
+        height: 5px;
+        border-radius: 0 2px 2px 0;
+        background: currentColor;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr) auto 44px;
+        align-items: center;
+        gap: 6px;
+        padding: 0 8px 0 4px;
+        border-bottom: 0;
+        background: rgba(255, 255, 255, 0.96);
+        z-index: 4;
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto;
+        border-radius: 12px;
+        color: #202020;
+        font-size: 23px;
+      }
+
+      .ui-icon {
+        width: 21px;
+        height: 21px;
+        display: block;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .icon-btn:active,
+      .pill:active,
+      .file-action:active,
+      .sheet-action:active,
+      .mini-action:active {
+        background: var(--soft);
+      }
+
+      .title {
+        position: relative;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 18px;
+        font-weight: 400;
+      }
+
+      .logo-mark {
+        flex: 0 0 auto;
+        width: 26px;
+        height: 26px;
+        display: block;
+      }
+
+      .hero-logo {
+        width: 54px;
+        height: 54px;
+        display: block;
+        filter: drop-shadow(0 10px 18px rgba(64, 80, 140, 0.12));
+      }
+
+      .brand {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .pill,
+      .balance {
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        white-space: nowrap;
+        font-weight: 400;
+      }
+
+      .pill {
+        gap: 3px;
+        padding: 0 2px;
+        color: #777a83;
+        background: transparent;
+        font-size: 18px;
+      }
+
+      .balance {
+        font-size: 12px;
+      }
+
+      .balance {
+        padding: 0 10px;
+        color: var(--accent-ink);
+        background: var(--accent-soft);
+      }
+
+      .stage {
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 12px;
+        padding: 34px 24px;
+        background: #fff;
+      }
+
+      .spark {
+        width: 54px;
+        height: 54px;
+        display: grid;
+        place-items: center;
+      }
+
+      .hello {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 740;
+      }
+
+      .tagline {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .composer {
+        border-top: 0;
+        background: var(--panel);
+      }
+
+      .composer::after {
+        content: "";
+        display: block;
+        height: 21px;
+        padding: 0 16px;
+        color: #a2a4aa;
+        font-size: 11px;
+        line-height: 1;
+      }
+
+      .attachment-tray {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px 14px 0;
+        scrollbar-width: none;
+      }
+
+      .attachment-tray:empty {
+        display: none;
+      }
+
+      .attachment-tray::-webkit-scrollbar,
+      .message-list::-webkit-scrollbar {
+        display: none;
+      }
+
+      .attachment-card {
+        position: relative;
+        flex: 0 0 94px;
+        height: 62px;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        align-items: center;
+        justify-items: center;
+        padding: 8px 8px 7px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--soft-2);
+        color: #3e3158;
+        font-size: 12px;
+      }
+
+      .attachment-card.photo {
+        padding: 0;
+        overflow: visible;
+        background: #fff;
+      }
+
+      .attachment-thumb {
+        font-size: 19px;
+        line-height: 1;
+      }
+
+      .attachment-photo {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: hidden;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .attachment-name {
+        width: 100%;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+
+      .remove-attachment {
+        position: absolute;
+        top: -7px;
+        right: -7px;
+        width: 20px;
+        height: 20px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #1f1f1f;
+        color: white;
+        font-size: 13px;
+      }
+
+      .skill-row {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 8px 14px 0;
+      }
+
+      .skill-chip {
+        flex: 0 0 auto;
+        max-width: 180px;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #f1f1f3;
+        color: #4b4b51;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 640;
+      }
+
+      .skill-chip::before {
+        content: "";
+        width: 14px;
+        height: 14px;
+        background: center / contain no-repeat url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13 2 5 14h6l-1 8 9-13h-6z' fill='none' stroke='%233f4147' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+      }
+
+      .input-row {
+        display: grid;
+        grid-template-columns: 24px minmax(0, 1fr) 24px;
+        align-items: end;
+        gap: 8px;
+        min-height: 48px;
+        margin: 12px 16px 0;
+        padding: 12px 10px;
+        border-bottom: 0;
+        border-radius: 14px;
+        background: #f3f4f6;
+      }
+
+      .composer.collapsed .input-row {
+        border-bottom: 0;
+      }
+
+      .add-btn {
+        position: relative;
+        width: 24px;
+        height: 24px;
+        display: block;
+        margin: 0;
+        border: 1.4px solid currentColor;
+        border-radius: 50%;
+        color: #2f2f34;
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .plus-icon {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 12px;
+        height: 12px;
+        display: block;
+        transform: translate(-50%, -50%);
+      }
+
+      .plus-icon::before,
+      .plus-icon::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 12px;
+        height: 1.8px;
+        border-radius: 999px;
+        background: currentColor;
+        transform: translate(-50%, -50%);
+      }
+
+      .plus-icon::after {
+        width: 1.8px;
+        height: 12px;
+      }
+
+      .add-btn[aria-expanded="true"] {
+        color: var(--accent);
+        transform: rotate(45deg);
+      }
+
+      .message-input,
+      .fake-input {
+        width: 100%;
+        min-width: 0;
+        min-height: 24px;
+        max-height: 102px;
+        margin: 0;
+        padding: 0 2px;
+        overflow-y: auto;
+        border: 0;
+        border-radius: 0;
+        outline: none;
+        resize: none;
+        background: transparent;
+        color: var(--ink);
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .message-input::placeholder,
+      .fake-input {
+        color: #9b9b9b;
+      }
+
+      .action-btn {
+        position: relative;
+        width: 24px;
+        height: 24px;
+        display: block;
+        margin: 0;
+        border-radius: 50%;
+        background: var(--accent);
+        color: white;
+        font-size: 16px;
+        box-shadow: none;
+      }
+
+      .action-icon {
+        position: relative;
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+
+      .action-svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 16px;
+        height: 16px;
+        display: block;
+        transform: translate(-50%, -50%);
+        stroke: #fff;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .action-svg .filled {
+        fill: #fff;
+        stroke: none;
+      }
+
+      .icon-mic::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 2px;
+        width: 8px;
+        height: 13px;
+        border: 2px solid #fff;
+        border-radius: 999px;
+      }
+
+      .icon-mic::after {
+        content: "";
+        position: absolute;
+        left: 3px;
+        top: 10px;
+        width: 16px;
+        height: 9px;
+        border: 2px solid #fff;
+        border-top: 0;
+        border-radius: 0 0 999px 999px;
+        box-shadow:
+          inset 0 -7px 0 -6px #fff,
+          7px 8px 0 -6px #fff;
+      }
+
+      .icon-send::before,
+      .icon-send::after {
+        content: "";
+        position: absolute;
+        background: #fff;
+        border-radius: 999px;
+      }
+
+      .icon-send::before {
+        left: 10px;
+        top: 4px;
+        width: 2px;
+        height: 16px;
+      }
+
+      .icon-send::after {
+        left: 5px;
+        top: 4px;
+        width: 12px;
+        height: 12px;
+        border-top: 2px solid #fff;
+        border-left: 2px solid #fff;
+        background: transparent;
+        border-radius: 1px;
+        transform: rotate(45deg);
+      }
+
+      .icon-recording {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+      }
+
+      .icon-recording::before,
+      .icon-recording::after {
+        content: "";
+      }
+
+      .icon-recording span,
+      .icon-recording::before,
+      .icon-recording::after {
+        width: 3px;
+        border-radius: 999px;
+        background: #fff;
+        animation: levelPulse 0.9s ease-in-out infinite;
+      }
+
+      .icon-recording::before {
+        height: 10px;
+        animation-delay: -0.18s;
+      }
+
+      .icon-recording span {
+        height: 18px;
+      }
+
+      .icon-recording::after {
+        height: 13px;
+        animation-delay: 0.18s;
+      }
+
+      .icon-stop::before {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        background: #fff;
+      }
+
+      .action-btn.recording {
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      .action-btn.stop {
+        background: var(--accent);
+        box-shadow: none;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(23, 24, 28, 0.24);
+        }
+
+        50% {
+          box-shadow: 0 0 0 8px rgba(23, 24, 28, 0);
+        }
+      }
+
+      @keyframes levelPulse {
+        0%,
+        100% {
+          transform: scaleY(0.68);
+          opacity: 0.72;
+        }
+
+        50% {
+          transform: scaleY(1);
+          opacity: 1;
+        }
+      }
+
+      .expanded {
+        display: grid;
+      }
+
+      .composer.collapsed .expanded {
+        display: none;
+      }
+
+      .quick-files {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        padding: 16px 12px 14px;
+        border-bottom: 0;
+      }
+
+      .file-action {
+        min-width: 0;
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        gap: 5px;
+        aspect-ratio: 1;
+        padding: 8px 3px;
+        border: 1px solid #e5e5e8;
+        border-radius: 12px;
+        background: var(--soft);
+        color: #323232;
+      }
+
+      .file-icon {
+        width: 22px;
+        height: 22px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #2f2f34;
+      }
+
+      .file-action.cloud {
+        background: #f6f8ff;
+      }
+
+      .file-svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .file-label {
+        width: 100%;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .sheet-action {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: calc(100% - 32px);
+        margin: 12px 16px 0;
+        justify-content: space-between;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .sheet-action.secondary {
+        color: #666;
+        background: #fbfbfc;
+        margin-bottom: 12px;
+      }
+
+      .sheet-action span:nth-child(2) {
+        flex: 1;
+        text-align: left;
+      }
+
+      .disabled-copy {
+        color: #a5a5aa;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .message-list {
+        position: relative;
+        overflow-y: auto;
+        padding: 18px 16px 22px;
+        background: #fff;
+        scrollbar-width: none;
+      }
+
+      .message-list.with-jump {
+        padding-bottom: 64px;
+      }
+
+      .message {
+        display: grid;
+        gap: 9px;
+        margin-bottom: 18px;
+      }
+
+      .message.user {
+        justify-items: end;
+      }
+
+      .bubble {
+        max-width: 82%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: var(--soft-2);
+        color: #252529;
+        font-size: 15px;
+        line-height: 1.46;
+      }
+
+      .message.user .bubble {
+        border-top-right-radius: 4px;
+        background: var(--soft-2);
+        color: var(--ink);
+      }
+
+      .message.ai .bubble {
+        border-top-left-radius: 4px;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+      }
+
+      .markdown-result {
+        max-width: 100%;
+        display: grid;
+        gap: 8px;
+        color: #252529;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .markdown-result p,
+      .markdown-result h3 {
+        margin: 0;
+      }
+
+      .markdown-result h3 {
+        font-size: 15px;
+        font-weight: 700 !important;
+      }
+
+      .context-menu {
+        display: grid;
+        width: 104px;
+        overflow: hidden;
+        padding: 0;
+        border: 1px solid rgba(18, 18, 18, 0.08);
+        border-radius: 10px;
+        background: #fff;
+        color: #3f3f45;
+        box-shadow: 0 12px 26px rgba(25, 25, 31, 0.14);
+      }
+
+      .context-menu button {
+        width: 100%;
+        min-height: 38px;
+        padding: 0 12px;
+        border-radius: 0;
+        color: #3f3f45;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .context-menu button:active {
+        background: var(--soft-2);
+      }
+
+      .input-attachment {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 210px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: #4d4d51;
+        font-size: 13px;
+      }
+
+      .step-line {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 26px;
+        color: #808086;
+        font-size: 13px;
+      }
+
+      .breathing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #8549eb;
+        animation: dotPulse 1.15s ease-in-out infinite;
+      }
+
+      .artifact-progress {
+        display: flex;
+        align-items: center;
+        min-height: 16px;
+        margin-top: -2px;
+        padding-left: 6px;
+      }
+
+      @keyframes dotPulse {
+        0%,
+        100% {
+          opacity: 0.35;
+          transform: scale(0.82);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scale(1.15);
+        }
+      }
+
+      .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        min-height: 34px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #66666a;
+        font-size: 13px;
+      }
+
+      .step-group {
+        display: grid;
+        gap: 0;
+      }
+
+      .message.ai.steps-collapsed .step-group {
+        display: none;
+      }
+
+      .artifact {
+        display: grid;
+        gap: 8px;
+        width: min(100%, 310px);
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .artifact-head {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+        font-size: 15px;
+        font-weight: 680;
+      }
+
+      .artifact-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .artifact-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .mini-action {
+        min-height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fafafa;
+        color: #4d4d51;
+        font-size: 13px;
+        font-weight: 620;
+      }
+
+      .code-wrap {
+        position: relative;
+        width: min(100%, 310px);
+      }
+
+      .code-block {
+        width: min(100%, 310px);
+        overflow-x: auto;
+        padding: 32px 12px 11px;
+        border-radius: 12px;
+        background: #f0f1f3;
+        color: #38383d;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 12px;
+        line-height: 1.55;
+        white-space: pre;
+      }
+
+      .copy-code {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 7px;
+        color: #65656b;
+      }
+
+      .copy-code:active {
+        background: rgba(0, 0, 0, 0.06);
+      }
+
+      .copy-code svg {
+        width: 17px;
+        height: 17px;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .image-strip {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        width: min(100%, 310px);
+      }
+
+      .image-thumb {
+        flex: 0 0 132px;
+        height: 86px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background:
+          linear-gradient(135deg, rgba(180, 182, 188, 0.22), transparent 45%),
+          var(--soft-2);
+        color: #5d6068;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .image-thumb img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        border-radius: 12px;
+        object-fit: cover;
+      }
+
+      .ops {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        color: #67676d;
+      }
+
+      .ops button {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        color: #686b73;
+      }
+
+      .ops svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .jump-bottom {
+        position: sticky;
+        left: calc(100% - 52px);
+        bottom: -52px;
+        z-index: 5;
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        margin: 0 0 0 auto;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 8px 16px rgba(26, 26, 31, 0.12);
+        color: var(--accent-ink);
+        font-size: 13px;
+        font-weight: 760;
+        transform: none;
+      }
+
+      .jump-bottom.is-hidden {
+        display: none;
+      }
+
+      .clarify {
+        display: grid;
+        gap: 8px;
+      }
+
+      .choice-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .choice {
+        min-height: 32px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--accent-ink);
+        font-size: 13px;
+        font-weight: 630;
+      }
+
+      .more-popover {
+        position: absolute;
+        top: 112px;
+        right: 8px;
+        z-index: 6;
+        width: 132px;
+        overflow: hidden;
+        border: 1px solid rgba(18, 18, 18, 0.08);
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 16px 34px rgba(35, 35, 42, 0.14);
+      }
+
+      .more-popover button {
+        width: 100%;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border-bottom: 0;
+        color: #a2a2a8;
+        font-size: 14px;
+        text-align: left;
+      }
+
+      .mono-menu-icon {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 auto;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .more-popover button:last-child {
+        border-bottom: 0;
+      }
+
+      .more-popover.is-hidden {
+        display: none;
+      }
+
+      .drawer-phone {
+        grid-template-columns: 304px minmax(0, 1fr);
+        grid-template-rows: 48px minmax(0, 1fr);
+      }
+
+      .drawer-phone .statusbar {
+        grid-column: 1 / -1;
+      }
+
+      .drawer {
+        min-height: 0;
+        display: grid;
+        grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
+        border-right: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .profile {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) 42px;
+        gap: 10px;
+        align-items: center;
+        padding: 16px 14px 12px;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+        font-weight: 760;
+      }
+
+      .profile-name {
+        margin: 0 0 4px;
+        font-size: 15px;
+        font-weight: 720;
+      }
+
+      .profile-sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .drawer-balance {
+        margin: 0 14px 14px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 12px;
+        border-radius: 12px;
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .drawer-entry {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 14px 10px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fbfbfc;
+        color: #3e3e43;
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      .drawer-entry span:first-child {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .drawer-capabilities {
+        display: grid;
+        gap: 4px;
+        margin: -2px 14px 12px;
+        padding: 6px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fbfbfc;
+      }
+
+      .capability-action {
+        min-height: 34px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 10px;
+        border-radius: 9px;
+        color: #666a72;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .capability-action:active {
+        background: var(--soft-2);
+      }
+
+      .drawer-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px 8px;
+        color: #333338;
+        font-size: 14px;
+        font-weight: 720;
+      }
+
+      .drawer-tools {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #3f4147;
+      }
+
+      .drawer-tool {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+      }
+
+      .drawer-tool:active {
+        background: var(--soft-2);
+      }
+
+      .drawer-tool svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .session-list {
+        min-height: 0;
+        overflow-y: auto;
+        padding: 2px 12px 18px;
+      }
+
+      .date-label {
+        margin: 14px 6px 6px;
+        color: #9b9ba1;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .session-item {
+        position: relative;
+        width: 100%;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 0 10px;
+        border-radius: 12px;
+        color: #3f3f45;
+        font-size: 14px;
+        text-align: left;
+      }
+
+      .session-title {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .session-item.active {
+        background: var(--soft-2);
+        font-weight: 680;
+      }
+
+      .session-more {
+        flex: 0 0 auto;
+        width: 34px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        color: #8c8c92;
+        font-weight: 700;
+      }
+
+      .session-more-icon {
+        width: 4px;
+        height: 4px;
+        display: block;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow:
+          -6px 0 0 currentColor,
+          6px 0 0 currentColor;
+      }
+
+      .session-more:active {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .session-popover {
+        position: absolute;
+        top: 30px;
+        right: 8px;
+        z-index: 9;
+        display: none;
+        width: 104px;
+        overflow: hidden;
+        border: 1px solid rgba(18, 18, 18, 0.08);
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 12px 26px rgba(25, 25, 31, 0.14);
+      }
+
+      .session-popover button {
+        width: 100%;
+        min-height: 38px;
+        padding: 0 12px;
+        border-bottom: 0;
+        color: #3f3f45;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .session-popover button:last-child {
+        border-bottom: 0;
+        color: var(--danger);
+      }
+
+      .session-item.menu-open .session-popover {
+        display: block;
+      }
+
+      .new-task {
+        min-height: 48px;
+        margin: 0 14px 14px;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-weight: 720;
+      }
+
+      .drawer-preview {
+        position: relative;
+        display: grid;
+        grid-template-rows: 54px 1fr auto;
+        min-width: 0;
+        background: #fff;
+        opacity: 0.62;
+      }
+
+      .vm-demo-phone {
+        grid-template-rows: 54px minmax(0, 1fr) auto;
+      }
+
+      .vm-backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: 7;
+        background: rgba(20, 20, 24, 0.24);
+      }
+
+      .vm-sheet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 8;
+        height: 85%;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        overflow: hidden;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        background: #fff;
+        box-shadow: 0 -18px 42px rgba(20, 20, 24, 0.2);
+      }
+
+      .vm {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        height: 100%;
+        background: #fff;
+      }
+
+      .vm-head {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 13px 16px 12px;
+        border-bottom: 0;
+      }
+
+      .vm-computer-icon {
+        position: relative;
+        width: 34px;
+        height: 34px;
+        border: 2px solid #202124;
+        border-radius: 2px;
+      }
+
+      .vm-computer-icon::before {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 11px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #30d84b;
+        box-shadow: 0 0 0 7px rgba(48, 216, 75, 0.12);
+      }
+
+      .vm-computer-icon::after {
+        content: "";
+        position: absolute;
+        left: 8px;
+        bottom: -10px;
+        width: 16px;
+        height: 8px;
+        border-bottom: 2px solid #202124;
+        border-left: 2px solid transparent;
+        border-right: 2px solid transparent;
+      }
+
+      .vm-title {
+        margin: 0 0 4px;
+        font-size: 17px;
+        font-weight: 740;
+      }
+
+      .vm-subtitle {
+        margin: 0;
+        color: #5d5d63;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .vm-progress {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #56565c;
+        font-size: 13px;
+        font-weight: 680;
+        white-space: nowrap;
+      }
+
+      .vm-head-icon {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 7px;
+        color: #303036;
+        font-size: 20px;
+      }
+
+      .vm-screen {
+        min-width: 0;
+        min-height: 0;
+        margin: 14px;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #061a29;
+        box-shadow: 0 12px 24px rgba(6, 26, 41, 0.22);
+      }
+
+      .vm-terminal {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 42px minmax(0, 1fr) auto auto;
+        overflow: hidden;
+        background: #061a29;
+        color: #dce7f2;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .code-title {
+        display: grid;
+        place-items: center;
+        background: #0d2d43;
+        color: #8fa6b8;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+        font-size: 13px;
+      }
+
+      .code-body,
+      .output-body {
+        overflow: hidden;
+        padding: 14px 14px 10px;
+        white-space: pre-wrap;
+      }
+
+      .code-body {
+        color: #d7e0ea;
+      }
+
+      .code-line {
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .code-line .line-no {
+        color: #6f8aa0;
+        text-align: right;
+      }
+
+      .kw {
+        color: #d68aff;
+      }
+
+      .str {
+        color: #ffd084;
+      }
+
+      .fn {
+        color: #a9e66f;
+      }
+
+      .output-title {
+        padding: 10px 14px 9px;
+        border-top: 0;
+        border-bottom: 0;
+        background: #0d2d43;
+        color: #dbe8f2;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .output-title::after {
+        content: "";
+        display: block;
+        width: 54px;
+        height: 2px;
+        margin-top: 8px;
+        border-radius: 999px;
+        background: #8ab0ff;
+      }
+
+      .output-body {
+        max-height: 94px;
+        color: #dbe8f2;
+      }
+
+      .vm-current-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 28px;
+        padding: 0 14px;
+        background: #0d2d43;
+        color: #9fb1bf;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+        font-size: 12px;
+      }
+
+      .vm-current-step::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #9ce65d;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 8px;
+        padding: 10px 16px 12px;
+        border-top: 0;
+        background: #fff;
+      }
+
+      .track {
+        position: relative;
+        height: 28px;
+        min-width: 0;
+      }
+
+      .track::before {
+        content: "";
+        position: absolute;
+        top: 13px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        border-radius: 999px;
+        background: #d5d6dc;
+      }
+
+      .track span {
+        position: absolute;
+        top: 3px;
+        width: 22px;
+        height: 22px;
+        border: 3px solid #d5d6dc;
+        border-radius: 50%;
+        background: #fff;
+        transform: translateX(-50%);
+      }
+
+      .track span.done {
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+
+      .track span:nth-child(1) {
+        left: 0;
+        transform: translateX(0);
+      }
+
+      .track span:nth-child(2) {
+        left: 20%;
+      }
+
+      .track span:nth-child(3) {
+        left: 40%;
+      }
+
+      .track span:nth-child(4) {
+        left: 60%;
+      }
+
+      .track span:nth-child(5) {
+        left: 80%;
+      }
+
+      .track span:nth-child(6) {
+        right: 0;
+        transform: translateX(0);
+      }
+
+      .vm-controls {
+        display: grid;
+        grid-template-columns: 32px 32px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .vm-controls .track {
+        height: 22px;
+      }
+
+      .vm-controls .track::before {
+        top: 10px;
+        height: 3px;
+      }
+
+      .vm-controls .track span {
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border-width: 3px;
+      }
+
+      .vm-controls .track span:nth-child(2) {
+        left: 22%;
+      }
+
+      .vm-controls .track span:nth-child(3) {
+        left: 43%;
+      }
+
+      .vm-controls .track span:nth-child(4) {
+        left: 64%;
+      }
+
+      .vm-controls .track span:nth-child(5) {
+        left: 82%;
+      }
+
+      .vm-controls .mini-action {
+        min-height: 30px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        font-size: 14px;
+      }
+
+      .live {
+        justify-self: end;
+        min-width: auto;
+        min-height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 0;
+        background: transparent;
+        color: #55555b;
+        font-size: 13px;
+        font-weight: 720;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        z-index: 20;
+        width: max-content;
+        max-width: calc(100vw - 32px);
+        padding: 9px 13px;
+        border-radius: 999px;
+        background: rgba(23, 23, 23, 0.88);
+        color: white;
+        font-size: 13px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, 8px);
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      .points-page {
+        grid-template-rows: 48px 58px minmax(0, 1fr);
+        background: #fff;
+      }
+
+      .points-topbar {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+        align-items: center;
+        padding: 0 8px;
+        background: #fff;
+      }
+
+      .points-title {
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .points-back {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        justify-self: start;
+        border-radius: 10px;
+        color: #383a40;
+      }
+
+      .points-back svg {
+        width: 22px;
+        height: 22px;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .points-content {
+        min-height: 0;
+        overflow-y: auto;
+        padding: 14px 16px 24px;
+        background: #fff;
+        scrollbar-width: none;
+      }
+
+      .points-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      .points-balance-card {
+        display: grid;
+        gap: 12px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fbfbfc;
+      }
+
+      .points-label {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .points-value-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .points-value {
+        color: var(--ink);
+        font-size: 34px;
+        line-height: 1;
+        font-weight: 650 !important;
+      }
+
+      .points-apply {
+        min-height: 34px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 13px;
+      }
+
+      .points-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 18px;
+        color: #252529;
+        font-size: 15px;
+      }
+
+      .points-filter-tabs {
+        display: flex;
+        gap: 6px;
+        margin: 10px 0 12px;
+      }
+
+      .points-filter-tabs span {
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: var(--soft-2);
+        color: #61646c;
+        font-size: 12px;
+      }
+
+      .points-filter-tabs span.active {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .point-record-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .point-record {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 13px 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .point-record-title {
+        margin: 0 0 7px;
+        color: #252529;
+        font-size: 14px;
+      }
+
+      .point-record-time {
+        margin: 0;
+        color: #8c8f98;
+        font-size: 12px;
+      }
+
+      .point-delta {
+        color: #3f4147;
+        font-size: 14px;
+      }
+
+      .point-delta.gain {
+        color: var(--success);
+      }
+
+      .point-empty {
+        padding: 18px 0 4px;
+        color: #a0a3aa;
+        text-align: center;
+        font-size: 12px;
+      }
+
+      .settings-page {
+        grid-template-rows: 48px 58px minmax(0, 1fr);
+        background: #fff;
+      }
+
+      .settings-content {
+        min-height: 0;
+        overflow-y: auto;
+        padding: 10px 16px 24px;
+        background: #fff;
+        scrollbar-width: none;
+      }
+
+      .settings-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      .settings-section {
+        margin-bottom: 14px;
+      }
+
+      .settings-section-title {
+        margin: 0 0 7px;
+        padding: 0 4px;
+        color: #8c8f98;
+        font-size: 12px;
+      }
+
+      .settings-group {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fbfbfc;
+      }
+
+      .settings-row {
+        width: 100%;
+        min-height: 44px;
+        position: relative;
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr) auto 12px;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px;
+        color: #2f3035;
+        font-size: 14px;
+        text-align: left;
+      }
+
+      .settings-row + .settings-row {
+        border-top: 0;
+      }
+
+      .settings-row + .settings-row::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 44px;
+        right: 12px;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .settings-icon {
+        width: 20px;
+        height: 20px;
+        color: #62656d;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .settings-row-meta {
+        color: #8c8f98;
+        font-size: 13px;
+      }
+
+      .settings-switch {
+        color: #8c8f98;
+        font-size: 13px;
+      }
+
+      .settings-switch.off {
+        color: #8c8f98;
+      }
+
+      .settings-chevron {
+        justify-self: end;
+        width: 12px;
+        text-align: right;
+        color: #8c8f98;
+        font-size: 16px;
+      }
+
+      .settings-logout {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--danger);
+        font-size: 14px;
+      }
+
+      body * {
+        font-weight: 400 !important;
+      }
+
+      .hello {
+        font-weight: 740 !important;
+      }
+
+      @media (max-width: 760px) {
+        .workspace {
+          padding: 18px 12px 28px;
+        }
+
+        .page-head {
+          display: grid;
+          align-items: start;
+        }
+
+        .legend {
+          justify-content: flex-start;
+        }
+
+        .prototype-grid {
+          grid-template-columns: 1fr;
+          gap: 22px;
+        }
+
+        .phone {
+          width: min(100%, 378px);
+          height: min(100vh, 840px);
+        }
+
+        .drawer-phone {
+          grid-template-columns: 300px 90px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="workspace">
+      <header class="page-head">
+        <div>
+          <h1 class="page-title">灵犀移动端会话主界面原型</h1>
+          <p class="page-note">当前只覆盖会话主界面相关页面；设置、灵点明细、任务/技能独立页暂不展开。</p>
+        </div>
+        <div class="legend" aria-label="范围标记">
+          <span>P0 主链路</span>
+          <span>P1 入口占位</span>
+          <span>预览版置灰</span>
+        </div>
+      </header>
+
+      <section class="prototype-grid" aria-label="会话主界面页面">
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>1. 首页空状态</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦6000</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="stage" aria-label="欢迎语">
+              <div class="spark" aria-hidden="true"><img class="hero-logo" src="assets/lingxi-logo.svg" alt="" /></div>
+              <h2 class="hello">你好，我是灵犀</h2>
+              <p class="tagline">随时随地响应你的想法</p>
+            </section>
+            <section class="composer collapsed" aria-label="输入区">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <textarea class="message-input" rows="1" placeholder="发消息..." aria-label="发消息"></textarea>
+                <button class="action-btn action-state stop" aria-label="中断生成" data-state="running"><svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><rect class="filled" x="7" y="7" width="10" height="10" rx="2"></rect></svg></button>
+              </div>
+              <div class="expanded">
+                <div class="quick-files">
+                  <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7 7h2l1.2-2h3.6L15 7h2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3Z"></path><circle cx="12" cy="13" r="3"></circle></svg></span><span class="file-label">拍照</span></button>
+                  <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="m7 16 3.5-4 3 3 2-2.2L18 16"></path><circle cx="8.5" cy="9" r="1"></circle></svg></span><span class="file-label">相册</span></button>
+                  <button class="file-action cloud"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7.5 18h9a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.4 1.4A3.4 3.4 0 0 0 7.5 18Z"></path><path d="M12 10v5"></path><path d="m9.8 12.8 2.2 2.2 2.2-2.2"></path></svg></span><span class="file-label">WPS云文档</span></button>
+                  <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H10l2 2h5.5A2.5 2.5 0 0 1 20 9.5v7A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5Z"></path></svg></span><span class="file-label">本地文件</span></button>
+                </div>
+                <button class="sheet-action"><span><svg class="file-svg" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg></span><span>添加技能</span><span class="disabled-copy">P1</span></button>
+                <button class="sheet-action secondary"><span><svg class="file-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path><path d="M8.5 11h5"></path></svg></span><span>引用数据源</span><span class="disabled-copy">tbd</span></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>2. 输入与附件展开态</span>
+            <span class="priority">P0 / P1</span>
+          </div>
+          <div class="phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦6000</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="stage" aria-label="欢迎语">
+              <div class="spark" aria-hidden="true"><img class="hero-logo" src="assets/lingxi-logo.svg" alt="" /></div>
+              <h2 class="hello">你好，我是灵犀</h2>
+              <p class="tagline">随时随地响应你的想法</p>
+            </section>
+            <section class="composer" aria-label="输入展开区">
+              <div class="attachment-tray">
+                <div class="attachment-card photo">
+                  <button class="remove-attachment" aria-label="删除图片">×</button>
+                  <img class="attachment-photo" src="assets/whiteboard-thumb.png" alt="白板照片" />
+                </div>
+                <div class="attachment-card">
+                  <button class="remove-attachment" aria-label="删除文件">×</button>
+                  <span class="attachment-thumb"><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5Z"></path><path d="M13 3.5V8h4"></path></svg></span>
+                  <span class="attachment-name">会议纪要.docx</span>
+                </div>
+              </div>
+              <div class="skill-row">
+                <span class="skill-chip">周报生成</span>
+              </div>
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="收起附件入口" aria-expanded="true"><span class="plus-icon" aria-hidden="true"></span></button>
+                <textarea class="message-input" rows="1" aria-label="发消息">帮我根据附件整理本周周报</textarea>
+                <button class="action-btn action-state" aria-label="发送" data-state="send"><svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5"></path><path d="m6 11 6-6 6 6"></path></svg></button>
+              </div>
+              <div class="expanded">
+                <div class="quick-files">
+                  <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7 7h2l1.2-2h3.6L15 7h2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3Z"></path><circle cx="12" cy="13" r="3"></circle></svg></span><span class="file-label">拍照</span></button>
+                  <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="m7 16 3.5-4 3 3 2-2.2L18 16"></path><circle cx="8.5" cy="9" r="1"></circle></svg></span><span class="file-label">相册</span></button>
+                  <button class="file-action cloud"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7.5 18h9a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.4 1.4A3.4 3.4 0 0 0 7.5 18Z"></path><path d="M12 10v5"></path><path d="m9.8 12.8 2.2 2.2 2.2-2.2"></path></svg></span><span class="file-label">WPS云文档</span></button>
+                  <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H10l2 2h5.5A2.5 2.5 0 0 1 20 9.5v7A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5Z"></path></svg></span><span class="file-label">本地文件</span></button>
+                </div>
+                <button class="sheet-action"><span><svg class="file-svg" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg></span><span>添加技能</span><span class="disabled-copy">P1</span></button>
+                <button class="sheet-action secondary"><span><svg class="file-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path><path d="M8.5 11h5"></path></svg></span><span>引用数据源</span><span class="disabled-copy">tbd</span></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>3. 会话消息流与生成中</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦6000</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="message-list" aria-label="会话消息">
+              <div class="message user">
+                <div class="context-menu" aria-label="长按菜单">
+                  <button>复制</button>
+                  <button>修改</button>
+                </div>
+                <div class="bubble">帮我写本周周报，突出项目进展和下周计划。</div>
+                <div class="input-attachment">📎 会议纪要.docx</div>
+              </div>
+              <div class="message ai">
+                <div class="step-line">完成提取项目进展与风险项</div>
+                <div class="markdown-result">
+                  <p>根据你提供的会议纪要，我帮你整理成一份简洁的周报：</p>
+                  <h3>本周工作</h3>
+                  <p><strong>1. 埋点验收：</strong>完成 claw 埋点验收全流程，包括对接验证与收尾工作</p>
+                  <p><strong>2. 移动端产品规划：</strong>完成4家竞品移动端梳理、用户Query抽样分析、初步形态与模块整理构思，开始撰写核心功能规划</p>
+                  <p><strong>3. 竞品分析：</strong>系统性梳理移动端竞品，参考 cursor 产品规划思路</p>
+                  <h3>思考与沉淀</h3>
+                </div>
+                <div class="artifact-progress" aria-label="生成中"><span class="breathing-dot"></span></div>
+              </div>
+            </section>
+            <section class="composer collapsed" aria-label="生成中输入区">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <div class="fake-input">发消息...</div>
+                <button class="action-btn action-state stop" aria-label="中断生成" data-state="running"><svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><rect class="filled" x="7" y="7" width="10" height="10" rx="2"></rect></svg></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>4. 执行步骤折叠与展开</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Max ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦5980</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="message-list with-jump" aria-label="执行步骤消息">
+              <div class="message user">
+                <div class="bubble">分析销售数据，并说明你做了哪些步骤。</div>
+                <div class="input-attachment"><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V5"></path><path d="M5 19h15"></path><path d="M9 16v-5"></path><path d="M13 16V8"></path><path d="M17 16v-3"></path></svg><span>销售数据.xlsx</span></div>
+              </div>
+              <div class="message ai step-summary steps-collapsed">
+                <button class="summary-row" type="button" aria-label="展开执行步骤" aria-expanded="false">
+                  <span>运行了3个命令，查看了1个文件</span>
+                  <span>⌄</span>
+                </button>
+                <div class="step-group">
+                  <div class="step-line">读取WPS云文档技能说明</div>
+                  <div class="step-line">获取云文档文件信息</div>
+                  <div class="step-line">读取ET模块使用指南</div>
+                  <div class="step-line">思考已完成</div>
+                  <div class="step-line">初始化编辑云文档，获取表格结构</div>
+                </div>
+                <div class="markdown-result">
+                  <h3>销售数据分析</h3>
+                  <p><strong>数据清洗：</strong>去重、空值填充、异常过滤，统一格式</p>
+                  <p><strong>维度拆解：</strong>按产品线、区域、时间拆分，定位增长与下滑品类</p>
+                  <p><strong>趋势分析：</strong>绘制近 3 月销售趋势，关联促销节点</p>
+                  <p><strong>漏斗转化：</strong>曝光→点击→下单→支付，定位流失环节</p>
+                  <p><strong>结论输出：</strong>汇总发现与建议，输出可视化看板</p>
+                </div>
+              </div>
+              <div class="message user">
+                <div class="bubble">把这份销售数据缩成分析摘要和趋势图</div>
+              </div>
+              <div class="message ai step-summary steps-collapsed">
+                <button class="summary-row" type="button" aria-label="展开执行步骤" aria-expanded="false">
+                  <span>运行了5个命令，查看了1个文件，输出1个结果</span>
+                  <span>⌄</span>
+                </button>
+                <div class="step-group">
+                  <div class="step-line">执行数据字段标准化命令</div>
+                  <div class="step-line">执行核心指标聚合命令</div>
+                  <div class="step-line">执行区域增长贡献计算命令</div>
+                  <div class="step-line">执行趋势图数据生成命令</div>
+                  <div class="step-line">执行文档导出命令</div>
+                  <div class="step-line">查看 1 个文件：销售数据.xlsx</div>
+                </div>
+                <div class="bubble">已完成分析。主要增长来自华东和华南区域，建议下周优先复盘渠道活动。</div>
+                <div class="artifact">
+                  <div class="artifact-head"><span><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5Z"></path><path d="M13 3.5V8h4"></path></svg></span><span class="artifact-name">销售分析摘要.docx</span></div>
+                  <div class="artifact-actions">
+                    <button class="mini-action">预览</button>
+                    <button class="mini-action">导出</button>
+                  </div>
+                </div>
+                <div class="ops" aria-label="AI 消息操作条">
+                  <button aria-label="复制"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="10" height="10" rx="2"></rect><path d="M6 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path></svg></button>
+                  <button aria-label="重新生成"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"></path><path d="M20 4v6h-6"></path></svg></button>
+                  <button aria-label="点赞"><svg viewBox="0 0 24 24"><path d="M7 10v10"></path><path d="M7 20H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h2l4-7a2 2 0 0 1 3 2v4h4a2 2 0 0 1 2 2l-1 6a3 3 0 0 1-3 3Z"></path></svg></button>
+                  <button aria-label="点踩"><svg viewBox="0 0 24 24"><path d="M7 14V4"></path><path d="M7 4H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2l4 7a2 2 0 0 0 3-2v-4h4a2 2 0 0 0 2-2l-1-6a3 3 0 0 0-3-3Z"></path></svg></button>
+                  <button aria-label="反馈"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H9l-5 4v-4.5Z"></path></svg></button>
+                </div>
+              </div>
+              <button class="jump-bottom is-hidden" type="button" aria-label="跳到底部">↓</button>
+            </section>
+            <section class="composer collapsed" aria-label="继续追问">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <div class="fake-input">继续追问...</div>
+                <button class="action-btn action-state" aria-label="语音输入" data-state="mic"><svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>5. 多产出展示</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Max ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦5980</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="message-list" aria-label="多产出结果">
+              <div class="message user">
+                <div class="bubble">把这份销售数据做成分析摘要和趋势图。</div>
+                <div class="input-attachment"><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V5"></path><path d="M5 19h15"></path><path d="M9 16v-5"></path><path d="M13 16V8"></path><path d="M17 16v-3"></path></svg><span>销售数据.xlsx</span></div>
+              </div>
+              <div class="message ai">
+                <div class="bubble">已完成分析。主要增长来自华东和华南区域，建议下周优先复盘渠道活动。</div>
+                <div class="code-wrap">
+                  <button class="copy-code" aria-label="复制代码"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="10" height="10" rx="2"></rect><path d="M6 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path></svg></button>
+                  <div class="code-block">区域增长率 = 本周销售额 / 上周销售额 - 1
+华东  +18.4%
+华南  +13.2%
+华北   -2.1%</div>
+                </div>
+                <div class="image-strip" aria-label="图片产出">
+                  <div class="image-thumb"><img src="assets/trend-chart.svg" alt="销售趋势图" /></div>
+                  <div class="image-thumb"><img src="assets/sales-mindmap.svg" alt="销售分析思维导图" /></div>
+                </div>
+                <div class="artifact">
+                  <div class="artifact-head"><span><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5Z"></path><path d="M13 3.5V8h4"></path></svg></span><span class="artifact-name">销售分析摘要.pdf</span></div>
+                  <div class="artifact-actions">
+                    <button class="mini-action">预览</button>
+                    <button class="mini-action">导出</button>
+                  </div>
+                </div>
+                <div class="artifact-progress" aria-label="生成中"><span class="breathing-dot"></span></div>
+              </div>
+            </section>
+            <section class="composer collapsed" aria-label="继续追问">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <div class="fake-input">继续追问...</div>
+                <button class="action-btn action-state stop" aria-label="中断生成" data-state="running"><svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><rect class="filled" x="7" y="7" width="10" height="10" rx="2"></rect></svg></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>6. 虚拟机半屏弹层</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone vm-demo-phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Max ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦5980</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="message-list" aria-label="会话中的虚拟机入口">
+              <div class="message user">
+                <div class="bubble">帮我查看今天的大盘行情，并整理成一段摘要。</div>
+              </div>
+              <div class="message ai">
+                <button class="summary-row" aria-label="打开虚拟机详情">
+                  <span>正在通过我的电脑访问行情页面</span>
+                  <span>查看</span>
+                </button>
+                <div class="step-line"><span class="breathing-dot"></span><span>访问东方财富行情中心大盘页面...</span></div>
+              </div>
+            </section>
+            <section class="composer collapsed" aria-label="生成中输入区">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <div class="fake-input">发消息...</div>
+                <button class="action-btn action-state stop" aria-label="中断生成" data-state="running"><svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><rect class="filled" x="7" y="7" width="10" height="10" rx="2"></rect></svg></button>
+              </div>
+            </section>
+            <div class="vm-backdrop" aria-hidden="true"></div>
+            <section class="vm-sheet" aria-label="虚拟机半屏弹层">
+              <div class="vm-head">
+                <span class="vm-computer-icon" aria-hidden="true"></span>
+                <div>
+                  <h2 class="vm-title">我的电脑</h2>
+                  <p class="vm-subtitle">获取云文档文件信息</p>
+                </div>
+                <div class="vm-progress">
+                  <span>当前进度 1/4</span>
+                  <button class="vm-head-icon" aria-label="放大">↗</button>
+                  <button class="vm-head-icon" aria-label="关闭">×</button>
+                </div>
+              </div>
+              <div class="vm-screen">
+                <div class="vm-terminal">
+                  <div class="code-title">main.py — lingxi-workspace</div>
+                  <div class="code-body" aria-label="代码执行内容">
+                    <div class="code-line"><span class="line-no">1</span><span><span class="kw">import</span> sys, os</span></div>
+                    <div class="code-line"><span class="line-no">2</span><span>sys.path.insert(0,</span></div>
+                    <div class="code-line"><span class="line-no"></span><span>  os.path.join(os.getenv(<span class="str">'SKILL_PATH'</span>), <span class="str">'wps-docs'</span>,</span></div>
+                    <div class="code-line"><span class="line-no"></span><span>  <span class="str">'scripts'</span>))</span></div>
+                    <div class="code-line"><span class="line-no">3</span><span><span class="kw">import</span> kdocs</span></div>
+                    <div class="code-line"><span class="line-no">4</span><span></span></div>
+                    <div class="code-line"><span class="line-no">5</span><span>result = kdocs.get_file_info(<span class="str">"cjHN8B3q1n3N"</span>)</span></div>
+                    <div class="code-line"><span class="line-no">6</span><span><span class="fn">print</span>(result)</span></div>
+                  </div>
+                  <div class="output-title">Output</div>
+                  <div class="output-body">{'success': True, 'data': {'file_id': 'cjHN8B3q1n3N', 'name': '【PRD】灵犀移动端功能规划-V0.otl', 'link_url': 'https://www.kdocs.cn/l/cjHN8B3q1n3N', 'size': '409.81 KB'}}</div>
+                  <div class="vm-current-step">获取云文档文件信息</div>
+                </div>
+              </div>
+              <div class="timeline">
+                <div class="vm-controls">
+                  <button class="mini-action" aria-label="上一步">◀</button>
+                  <button class="mini-action" aria-label="播放">▶</button>
+                  <div class="track" aria-label="播放进度轴">
+                    <span class="done"></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <div class="live">● 实时</div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>7. 更多菜单置灰态</span>
+            <span class="priority">预览版</span>
+          </div>
+          <div class="phone compact">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
+              </div>
+              <button class="balance" aria-label="灵点余额">✦6000</button>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="message-list" aria-label="消息流背景">
+              <div class="message user"><div class="bubble">帮我整理上午会议纪要。</div></div>
+              <div class="message ai"><div class="bubble">可以，我会按议题、结论、待办来整理。</div></div>
+            </section>
+            <section class="composer collapsed">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <div class="fake-input">发消息...</div>
+                <button class="action-btn action-state" aria-label="语音输入" data-state="mic"><svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>8. 左侧历史会话抽屉</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone drawer-phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <aside class="drawer" aria-label="历史会话与用户信息">
+              <div class="profile">
+                <div class="avatar">张</div>
+                <div>
+                  <p class="profile-name">张三</p>
+                  <p class="profile-sub">WPS 账号已登录</p>
+                </div>
+                <button class="icon-btn" aria-label="设置"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path><path d="M19 13.5v-3l-2.1-.5a7 7 0 0 0-.8-1.9l1.1-1.9-2.1-2.1-1.9 1.1a7 7 0 0 0-1.9-.8L10.8 2h-3l-.5 2.1a7 7 0 0 0-1.9.8L3.5 3.8 1.4 5.9l1.1 1.9a7 7 0 0 0-.8 1.9L-.4 10.2v3l2.1.5a7 7 0 0 0 .8 1.9l-1.1 1.9 2.1 2.1 1.9-1.1a7 7 0 0 0 1.9.8l.5 2.1h3l.5-2.1a7 7 0 0 0 1.9-.8l1.9 1.1 2.1-2.1-1.1-1.9a7 7 0 0 0 .8-1.9Z" transform="translate(2.4 .4) scale(.82)"></path></svg></button>
+              </div>
+              <button class="drawer-balance">
+                <span>✦ 灵点 1280</span>
+                <span> ›</span>
+              </button>
+              <button class="drawer-entry">
+                <span><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"></rect><path d="M9 20h6"></path><path d="M12 16v4"></path></svg> Computer Use</span>
+                <span class="disabled-copy">tbd</span>
+              </button>
+              <div class="drawer-capabilities" aria-label="拓展能力">
+                <button class="capability-action"><svg class="mono-menu-icon" viewBox="0 0 24 24"><path d="M9 3h6v5h5v6h-5v7H9v-7H4V8h5Z"></path></svg><span>技能</span></button>
+                <button class="capability-action"><svg class="mono-menu-icon" viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"></circle><path d="M12 13V9"></path><path d="M12 13l3 2"></path><path d="M9 3h6"></path></svg><span>定时任务</span></button>
+                <button class="capability-action"><svg class="mono-menu-icon" viewBox="0 0 24 24"><path d="M6 5.5A3.5 3.5 0 0 1 12 3a3.5 3.5 0 0 1 6 2.5v8A4.5 4.5 0 0 1 13.5 18H12v3"></path><path d="M8 11h8"></path><path d="M9 15h5"></path></svg><span>知识 Wiki</span></button>
+              </div>
+              <div class="drawer-section-head">
+                <span>历史会话</span>
+                <span class="drawer-tools">
+                  <button class="drawer-tool" aria-label="搜索历史会话"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg></button>
+                  <button class="drawer-tool" aria-label="筛选历史会话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"></path><path d="M7 12h10"></path><path d="M10 18h4"></path></svg></button>
+                </span>
+              </div>
+              <div class="session-list">
+                <div class="date-label">今天</div>
+                <div class="session-item active menu-open">
+                  <span class="session-title">帮我写本周周报</span>
+                  <button class="session-more" aria-label="会话操作"><span class="session-more-icon" aria-hidden="true"></span></button>
+                  <div class="session-popover" aria-label="会话操作菜单">
+                    <button>重命名</button>
+                    <button>删除</button>
+                  </div>
+                </div>
+                <div class="session-item">
+                  <span class="session-title">翻译这份合同</span>
+                  <button class="session-more" aria-label="会话操作"><span class="session-more-icon" aria-hidden="true"></span></button>
+                  <div class="session-popover" aria-label="会话操作菜单">
+                    <button>重命名</button>
+                    <button>删除</button>
+                  </div>
+                </div>
+                <div class="session-item">
+                  <span class="session-title">PC端会话</span>
+                  <button class="session-more" aria-label="会话操作"><span class="session-more-icon" aria-hidden="true"></span></button>
+                  <div class="session-popover" aria-label="会话操作菜单">
+                    <button>重命名</button>
+                    <button>删除</button>
+                  </div>
+                </div>
+                <div class="date-label">昨天</div>
+                <div class="session-item">
+                  <span class="session-title">整理上午的会议纪要</span>
+                  <button class="session-more" aria-label="会话操作"><span class="session-more-icon" aria-hidden="true"></span></button>
+                  <div class="session-popover" aria-label="会话操作菜单">
+                    <button>重命名</button>
+                    <button>删除</button>
+                  </div>
+                </div>
+                <div class="date-label">近 7 天</div>
+                <div class="session-item">
+                  <span class="session-title">季度数据分析</span>
+                  <button class="session-more" aria-label="会话操作"><span class="session-more-icon" aria-hidden="true"></span></button>
+                  <div class="session-popover" aria-label="会话操作菜单">
+                    <button>重命名</button>
+                    <button>删除</button>
+                  </div>
+                </div>
+              </div>
+              <button class="new-task">＋ 新任务</button>
+            </aside>
+            <section class="drawer-preview" aria-label="当前会话预览">
+              <header class="topbar">
+                <span></span>
+                <div class="title"><span class="brand">WPS灵犀</span></div>
+                <span></span>
+                <span></span>
+              </header>
+              <section class="message-list">
+                <div class="message user"><div class="bubble">帮我写本周周报</div></div>
+                <div class="message ai"><div class="bubble">我正在整理你的材料。</div></div>
+              </section>
+              <section class="composer collapsed">
+                <div class="input-row">
+                  <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                  <div class="fake-input">发消息...</div>
+                  <button class="action-btn action-state" aria-label="语音输入" data-state="mic"><svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg></button>
+                </div>
+              </section>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>9. 灵点商业化页面</span>
+            <span class="priority">P1</span>
+          </div>
+          <div class="phone points-page">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="points-topbar">
+              <button class="points-back" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg></button>
+              <div class="points-title">灵点</div>
+              <span></span>
+            </header>
+            <section class="points-content" aria-label="灵点明细">
+              <div class="points-balance-card">
+                <div class="points-label">当前可用灵点</div>
+                <div class="points-value-row">
+                  <div class="points-value">7,980</div>
+                  <button class="points-apply"><span>✦</span><span>申请</span></button>
+                </div>
+              </div>
+              <div class="points-section-head">
+                <span>灵点明细</span>
+              </div>
+              <div class="points-filter-tabs" aria-label="筛选条件">
+                <span class="active">全部</span>
+                <span>消耗</span>
+                <span>获得</span>
+              </div>
+              <div class="point-record-list">
+                <div class="point-record">
+                  <div>
+                    <p class="point-record-title">AI产品经理学习指南</p>
+                    <p class="point-record-time">任务 · 2026-06-09 18:01</p>
+                  </div>
+                  <div class="point-delta">-50</div>
+                </div>
+                <div class="point-record">
+                  <div>
+                    <p class="point-record-title">销售数据分析摘要</p>
+                    <p class="point-record-time">任务 · 2026-06-09 15:42</p>
+                  </div>
+                  <div class="point-delta">-80</div>
+                </div>
+                <div class="point-record">
+                  <div>
+                    <p class="point-record-title">团队试用额度发放</p>
+                    <p class="point-record-time">系统 · 2026-06-08 09:30</p>
+                  </div>
+                  <div class="point-delta gain">+8000</div>
+                </div>
+              </div>
+              <div class="point-empty">- 没有更多了 -</div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>10. 设置页</span>
+            <span class="priority">P1</span>
+          </div>
+          <div class="phone settings-page">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="points-topbar">
+              <button class="points-back" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg></button>
+              <div class="points-title">设置</div>
+              <span></span>
+            </header>
+            <section class="settings-content" aria-label="设置列表">
+              <div class="settings-section">
+                <p class="settings-section-title">账户</p>
+                <div class="settings-group">
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M5 21a7 7 0 0 1 14 0"></path></svg><span>账号管理</span><span></span><span class="settings-chevron"></span></button>
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg><span>灵点 / 订阅</span><span></span><span class="settings-chevron">›</span></button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <p class="settings-section-title">通用</p>
+                <div class="settings-group">
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93 6.34 6.34"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg><span>外观</span><span></span><span class="settings-chevron">›</span></button>
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5h16v2"></path><path d="M9 19h6"></path><path d="M12 5v14"></path></svg><span>字体大小</span><span></span><span class="settings-chevron">›</span></button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <p class="settings-section-title">通知</p>
+                <div class="settings-group">
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span>推送通知</span><span class="settings-switch">开</span><span class="settings-chevron">›</span></button>
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="18" rx="3"></rect><path d="M4 8v8"></path><path d="M20 8v8"></path></svg><span>任务完成震动</span><span class="settings-switch off">关</span><span class="settings-chevron">›</span></button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <p class="settings-section-title">关于</p>
+                <div class="settings-group">
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg><span>关于灵犀</span><span></span><span class="settings-chevron">›</span></button>
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z"></path></svg><span>隐私政策</span><span></span><span class="settings-chevron">›</span></button>
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"></path><path d="M20 4v6h-6"></path></svg><span>软件更新</span><span></span><span class="settings-chevron">›</span></button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <p class="settings-section-title">帮助与反馈</p>
+                <div class="settings-group">
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.7 2.7 0 0 1 5 1.4c0 2-2.5 2.2-2.5 4.1"></path><path d="M12 17h.01"></path></svg><span>Q&A</span><span></span><span class="settings-chevron">›</span></button>
+                  <button class="settings-row"><svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H9l-5 4v-4.5Z"></path></svg><span>用户反馈</span><span></span><span class="settings-chevron">›</span></button>
+                </div>
+              </div>
+              <button class="settings-logout">退出登录</button>
+            </section>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.querySelector(".toast");
+      let toastTimer;
+
+      document.querySelectorAll(".panel-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+          const composer = button.closest(".composer");
+          const collapsed = composer.classList.toggle("collapsed");
+          button.setAttribute("aria-expanded", String(!collapsed));
+        });
+      });
+
+      document.querySelectorAll(".model-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+          const nextModel = button.textContent.includes("Pro") ? "Max" : "Pro";
+          button.textContent = `${nextModel} ›`;
+          showToast(`已切换 ${nextModel} 模式`);
+        });
+      });
+
+      document.querySelectorAll(".more-trigger").forEach((button) => {
+        button.addEventListener("click", () => {
+          const popover = button.closest(".phone")?.querySelector(".more-demo-popover");
+          if (popover) {
+            const hidden = popover.classList.toggle("is-hidden");
+            button.setAttribute("aria-expanded", String(!hidden));
+            return;
+          }
+
+          showToast("预览版中更多功能置灰展示");
+        });
+      });
+
+      document.querySelectorAll(".menu-trigger").forEach((button) => {
+        button.addEventListener("click", () => {
+          showToast("历史会话抽屉见第 8 屏");
+        });
+      });
+
+      document.querySelectorAll(".step-summary .summary-row").forEach((button) => {
+        button.addEventListener("click", () => {
+          const message = button.closest(".step-summary");
+          const collapsed = message.classList.toggle("steps-collapsed");
+          button.setAttribute("aria-expanded", String(!collapsed));
+          button.setAttribute("aria-label", collapsed ? "展开执行步骤" : "折叠执行步骤");
+          button.querySelector("span:last-child").textContent = collapsed ? "⌄" : "⌃";
+          button.closest(".message-list")?.dispatchEvent(new Event("scroll"));
+        });
+      });
+
+      document.querySelectorAll(".message-list .jump-bottom").forEach((button) => {
+        const list = button.closest(".message-list");
+        const updateJumpButton = () => {
+          const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
+          button.classList.toggle("is-hidden", atBottom);
+        };
+
+        button.addEventListener("click", () => {
+          list.scrollTo({ top: list.scrollHeight, behavior: "smooth" });
+        });
+
+        list.addEventListener("scroll", updateJumpButton);
+        updateJumpButton();
+      });
+
+      document.querySelectorAll(".action-state").forEach((button) => {
+        button.addEventListener("click", () => {
+          const state = button.dataset.state;
+
+          if (state === "mic") {
+            setActionState(button, "recording");
+            button.setAttribute("aria-label", "录音中");
+            showToast("开始语音输入");
+            return;
+          }
+
+          if (state === "recording") {
+            setActionState(button, "send");
+            button.setAttribute("aria-label", "发送");
+            showToast("语音已转文字");
+            return;
+          }
+
+          if (state === "send") {
+            setActionState(button, "running");
+            button.setAttribute("aria-label", "中断生成");
+            showToast("已发送，生成中");
+            return;
+          }
+
+          setActionState(button, "mic");
+          button.setAttribute("aria-label", "语音输入");
+          showToast("已中断生成");
+        });
+      });
+
+      document.querySelectorAll(".remove-attachment").forEach((button) => {
+        button.addEventListener("click", () => {
+          button.closest(".attachment-card").remove();
+          showToast("已删除附件");
+        });
+      });
+
+      document.querySelectorAll(".session-more").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const item = button.closest(".session-item");
+          document.querySelectorAll(".session-item.menu-open").forEach((openItem) => {
+            if (openItem !== item) openItem.classList.remove("menu-open");
+          });
+          item.classList.toggle("menu-open");
+        });
+      });
+
+      document.querySelectorAll(".message-input").forEach((input) => {
+        const resizeInput = () => {
+          input.style.height = "auto";
+          input.style.height = `${Math.min(input.scrollHeight, 102)}px`;
+        };
+        input.addEventListener("input", resizeInput);
+      });
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 1400);
+      }
+
+      function setActionState(button, state) {
+        const iconMap = {
+          mic: '<svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg>',
+          recording: '<svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14v-4"></path><path d="M10 17V7"></path><path d="M14 15V9"></path><path d="M18 13v-2"></path></svg>',
+          send: '<svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5"></path><path d="m6 11 6-6 6 6"></path></svg>',
+          running: '<svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><rect class="filled" x="7" y="7" width="10" height="10" rx="2"></rect></svg>',
+        };
+
+        button.dataset.state = state;
+        button.innerHTML = iconMap[state];
+        button.classList.toggle("recording", state === "recording");
+        button.classList.toggle("stop", state === "running");
+      }
+    </script>
+  </body>
+</html>
