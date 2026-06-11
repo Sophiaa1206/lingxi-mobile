@@ -232,6 +232,11 @@
         z-index: 4;
       }
 
+      .topbar-spacer {
+        width: 1px;
+        height: 1px;
+      }
+
       .icon-btn {
         width: 40px;
         height: 40px;
@@ -284,6 +289,8 @@
         height: 54px;
         display: block;
         filter: drop-shadow(0 10px 18px rgba(64, 80, 140, 0.12));
+        animation: logoBreath 2.4s ease-in-out infinite;
+        transform-origin: center;
       }
 
       .brand {
@@ -428,16 +435,20 @@
 
       .remove-attachment {
         position: absolute;
-        top: -7px;
-        right: -7px;
-        width: 20px;
-        height: 20px;
-        display: grid;
-        place-items: center;
+        top: -5px;
+        right: -5px;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 50%;
-        background: #1f1f1f;
-        color: white;
-        font-size: 13px;
+        background: #eceef2;
+        color: #737782;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        line-height: 16px;
+        padding: 0;
       }
 
       .skill-row {
@@ -468,7 +479,33 @@
         content: "";
         width: 14px;
         height: 14px;
+        flex: 0 0 auto;
         background: center / contain no-repeat url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13 2 5 14h6l-1 8 9-13h-6z' fill='none' stroke='%233f4147' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+      }
+
+      .skill-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .skill-remove {
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        color: #858891;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        line-height: 16px;
+        padding: 0;
+      }
+
+      .skill-remove:active {
+        background: #e2e3e7;
       }
 
       .input-row {
@@ -730,6 +767,17 @@
         }
       }
 
+      @keyframes logoBreath {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+
+        50% {
+          transform: translateY(-3px) scale(1.035);
+        }
+      }
+
       .expanded {
         display: grid;
       }
@@ -772,7 +820,7 @@
       }
 
       .file-action.cloud {
-        background: #f6f8ff;
+        background: var(--soft);
       }
 
       .file-svg {
@@ -916,6 +964,30 @@
         background: var(--soft-2);
       }
 
+      .message.user .context-menu {
+        justify-self: end;
+        margin-top: -3px;
+      }
+
+      .message.user.long-press-demo {
+        position: relative;
+        padding-bottom: 86px;
+      }
+
+      .message.user.long-press-demo .context-menu {
+        position: absolute;
+        top: 78px;
+        right: 0;
+        z-index: 4;
+        margin-top: 0;
+      }
+
+      .message.user.long-press-demo .input-attachment {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+
       .input-attachment {
         display: flex;
         align-items: center;
@@ -927,6 +999,13 @@
         background: #fff;
         color: #4d4d51;
         font-size: 13px;
+      }
+
+      .sheet-attachment-icon {
+        width: 20px;
+        height: 20px;
+        display: block;
+        flex: 0 0 auto;
       }
 
       .step-line {
@@ -991,34 +1070,115 @@
       }
 
       .artifact {
+        --file-color: #6b7280;
+        --file-bg: #f3f4f6;
         display: grid;
+        grid-template-columns: minmax(0, 1fr) 14px;
+        align-items: center;
         gap: 8px;
         width: min(100%, 310px);
-        padding: 13px;
+        min-height: 58px;
+        padding: 10px 12px;
         border: 1px solid var(--line);
         border-radius: 12px;
-        background: #fff;
+        background: linear-gradient(110deg, var(--file-bg), #fff 70%);
+        color: #252529;
+        text-decoration: none;
+      }
+
+      .artifact.docx {
+        --file-color: #2f6fe4;
+        --file-bg: #edf4ff;
+      }
+
+      .artifact.xlsx {
+        --file-color: #1f8f5f;
+        --file-bg: #ecf8f1;
+      }
+
+      .artifact.pptx {
+        --file-color: #df7728;
+        --file-bg: #fff3e8;
+      }
+
+      .artifact.pdf {
+        --file-color: #d94a42;
+        --file-bg: #fff0ef;
+      }
+
+      .artifact-icon {
+        width: 28px;
+        height: 28px;
+        display: block;
+        flex: 0 0 auto;
       }
 
       .artifact-head {
+        min-width: 0;
         display: flex;
         align-items: center;
         gap: 9px;
-        min-width: 0;
-        font-size: 15px;
-        font-weight: 680;
       }
 
       .artifact-name {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        color: #252529;
+        font-size: 14px;
       }
 
-      .artifact-actions {
+      .artifact-meta {
+        color: #858891;
+        font-size: 12px;
+      }
+
+      .artifact-open {
+        justify-self: end;
+        color: #9ca0aa;
+        font-size: 18px;
+      }
+
+      .artifact.inline-card .artifact-name {
+        font-size: 14px;
+      }
+
+      .artifact-strip {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        gap: 10px;
+        width: min(100%, 310px);
+        overflow: visible;
+        padding-bottom: 2px;
+      }
+
+      .artifact-strip .artifact {
+        width: 100%;
+      }
+
+      .plain-file-link {
+        flex: 0 0 210px;
+        min-height: 62px;
+        display: grid;
+        align-content: center;
+        gap: 4px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        color: #252529;
+        text-decoration: none;
+      }
+
+      .plain-file-link span:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+
+      .plain-file-link span:last-child {
+        color: #4b6fca;
+        font-size: 12px;
       }
 
       .mini-action {
@@ -1034,6 +1194,18 @@
       .code-wrap {
         position: relative;
         width: min(100%, 310px);
+      }
+
+      .code-wrap::before {
+        content: "markdown";
+        position: absolute;
+        top: 9px;
+        left: 12px;
+        z-index: 1;
+        color: #8b8e96;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 11px;
+        line-height: 1;
       }
 
       .code-block {
@@ -1087,11 +1259,9 @@
         height: 86px;
         display: grid;
         place-items: center;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background:
-          linear-gradient(135deg, rgba(180, 182, 188, 0.22), transparent 45%),
-          var(--soft-2);
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         color: #5d6068;
         font-size: 13px;
         font-weight: 650;
@@ -1101,7 +1271,7 @@
         width: 100%;
         height: 100%;
         display: block;
-        border-radius: 12px;
+        border-radius: 0;
         object-fit: cover;
       }
 
@@ -1177,6 +1347,135 @@
         font-weight: 630;
       }
 
+      .ask-phone .message-list {
+        min-height: 0;
+        max-height: 416px;
+        padding-bottom: 10px;
+      }
+
+      .ask-phone {
+        grid-template-rows: 48px 58px minmax(0, 1fr) auto auto;
+      }
+
+      .ask-reminder {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: -2px;
+        color: #8549eb;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .ask-reminder::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border: 1.6px dashed #8549eb;
+        border-radius: 50%;
+      }
+
+      .ask-card {
+        width: min(100%, 346px);
+        display: grid;
+        flex: 0 0 auto;
+        gap: 10px;
+        margin: 2px auto 6px;
+        padding: 10px 14px 10px;
+        border: 1px solid #e1e2e6;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 12px 26px rgba(24, 28, 38, 0.08);
+      }
+
+      .ask-card-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        min-height: 20px;
+        gap: 8px;
+        color: #60636b;
+        font-size: 14px;
+      }
+
+      .ask-collapse {
+        display: none;
+      }
+
+      .ask-progress {
+        color: #8c8f98;
+        font-size: 13px;
+      }
+
+      .ask-divider {
+        height: 1px;
+        background: #eff0f2;
+      }
+
+      .ask-question {
+        margin: 0;
+        color: #202124;
+        font-size: 15px;
+        line-height: 1.45;
+      }
+
+      .ask-options {
+        display: grid;
+        gap: 8px;
+      }
+
+      .ask-option {
+        display: grid;
+        grid-template-columns: 25px minmax(0, 1fr);
+        align-items: baseline;
+        gap: 8px;
+        color: #202124;
+        font-size: 14px;
+        line-height: 1.35;
+      }
+
+      .ask-key {
+        width: 25px;
+        height: 25px;
+        display: grid;
+        place-items: center;
+        border-radius: 7px;
+        background: #f1f1f2;
+        color: #8b8d93;
+        font-size: 13px;
+      }
+
+      .ask-option em {
+        display: none;
+      }
+
+      .ask-follow {
+        display: none;
+      }
+
+      .ask-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .ask-actions button {
+        min-width: 64px;
+        min-height: 32px;
+        padding: 0 12px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: #34363c;
+        font-size: 13px;
+      }
+
+      .ask-actions .primary {
+        border-color: #111;
+        background: #111;
+        color: #fff;
+      }
+
       .more-popover {
         position: absolute;
         top: 112px;
@@ -1222,21 +1521,40 @@
         display: none;
       }
 
+      .new-task-popover {
+        top: 104px;
+        right: 12px;
+        width: 126px;
+      }
+
+      .new-task-popover button {
+        color: #202124;
+      }
+
       .drawer-phone {
-        grid-template-columns: 304px minmax(0, 1fr);
+        grid-template-columns: 1fr;
         grid-template-rows: 48px minmax(0, 1fr);
+        background: #fff;
       }
 
       .drawer-phone .statusbar {
-        grid-column: 1 / -1;
+        grid-column: 1;
+        z-index: 4;
       }
 
       .drawer {
+        position: absolute;
+        left: 0;
+        top: 48px;
+        bottom: 0;
+        z-index: 3;
+        width: 328px;
         min-height: 0;
         display: grid;
         grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
         border-right: 1px solid var(--line);
         background: #fff;
+        box-shadow: 18px 0 38px rgba(24, 28, 38, 0.16);
       }
 
       .profile {
@@ -1244,7 +1562,7 @@
         grid-template-columns: 42px minmax(0, 1fr) 42px;
         gap: 10px;
         align-items: center;
-        padding: 16px 14px 12px;
+        padding: 16px 16px 12px;
       }
 
       .avatar {
@@ -1271,7 +1589,7 @@
       }
 
       .drawer-balance {
-        margin: 0 14px 14px;
+        margin: 0 16px 14px;
         min-height: 40px;
         display: flex;
         align-items: center;
@@ -1285,12 +1603,12 @@
       }
 
       .drawer-entry {
-        min-height: 48px;
+        min-height: 50px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 0 14px 10px;
-        padding: 0 12px;
+        margin: 0 16px 10px;
+        padding: 0 14px;
         border: 1px solid var(--line);
         border-radius: 12px;
         background: #fbfbfc;
@@ -1308,7 +1626,7 @@
       .drawer-capabilities {
         display: grid;
         gap: 4px;
-        margin: -2px 14px 12px;
+        margin: -2px 16px 12px;
         padding: 6px;
         border: 1px solid var(--line);
         border-radius: 12px;
@@ -1316,7 +1634,7 @@
       }
 
       .capability-action {
-        min-height: 34px;
+        min-height: 36px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -1335,7 +1653,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 16px 8px;
+        padding: 14px 18px 8px;
         color: #333338;
         font-size: 14px;
         font-weight: 720;
@@ -1373,7 +1691,7 @@
       .session-list {
         min-height: 0;
         overflow-y: auto;
-        padding: 2px 12px 18px;
+        padding: 2px 14px 18px;
       }
 
       .date-label {
@@ -1386,12 +1704,12 @@
       .session-item {
         position: relative;
         width: 100%;
-        min-height: 42px;
+        min-height: 44px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 8px;
-        padding: 0 10px;
+        padding: 0 12px;
         border-radius: 12px;
         color: #3f3f45;
         font-size: 14px;
@@ -1471,7 +1789,7 @@
 
       .new-task {
         min-height: 48px;
-        margin: 0 14px 14px;
+        margin: 0 16px 14px;
         border-radius: 10px;
         background: var(--accent);
         color: white;
@@ -1479,12 +1797,28 @@
       }
 
       .drawer-preview {
-        position: relative;
+        position: absolute;
+        inset: 48px 0 0 0;
+        z-index: 1;
         display: grid;
         grid-template-rows: 54px 1fr auto;
         min-width: 0;
         background: #fff;
-        opacity: 0.62;
+        opacity: 0.36;
+        filter: blur(8px);
+        transform: translateX(72px) scale(1.03);
+        transform-origin: left center;
+        pointer-events: none;
+      }
+
+      .drawer-phone::after {
+        content: "";
+        position: absolute;
+        inset: 48px 0 0 328px;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.58);
+        backdrop-filter: blur(10px);
+        pointer-events: none;
       }
 
       .vm-demo-phone {
@@ -1502,16 +1836,34 @@
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 0;
+        top: 124px;
         z-index: 8;
-        height: 85%;
+        height: auto;
+        bottom: 0;
         display: grid;
-        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
         overflow: hidden;
         border-top-left-radius: 16px;
         border-top-right-radius: 16px;
         background: #fff;
         box-shadow: 0 -18px 42px rgba(20, 20, 24, 0.2);
+      }
+
+      .sheet-grabber {
+        width: 44px;
+        height: 18px;
+        display: grid;
+        place-items: center;
+        justify-self: center;
+        margin-top: 8px;
+      }
+
+      .sheet-grabber::before {
+        content: "";
+        width: 34px;
+        height: 4px;
+        border-radius: 999px;
+        background: #d7d9df;
       }
 
       .vm {
@@ -1523,56 +1875,83 @@
 
       .vm-head {
         display: grid;
-        grid-template-columns: 44px minmax(0, 1fr) auto;
-        gap: 10px;
+        grid-template-columns: 34px minmax(0, 1fr) auto;
+        gap: 9px;
         align-items: center;
-        padding: 13px 16px 12px;
+        padding: 8px 14px 10px;
         border-bottom: 0;
       }
 
       .vm-computer-icon {
         position: relative;
-        width: 34px;
-        height: 34px;
-        border: 2px solid #202124;
-        border-radius: 2px;
+        width: 32px;
+        height: 32px;
+        align-self: center;
+        display: grid;
+        place-items: start center;
+        padding-top: 2px;
       }
 
       .vm-computer-icon::before {
         content: "";
-        position: absolute;
-        left: 11px;
-        top: 11px;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #30d84b;
-        box-shadow: 0 0 0 7px rgba(48, 216, 75, 0.12);
+        width: 28px;
+        height: 22px;
+        border: 2px solid #202124;
+        border-radius: 4px;
+        background:
+          radial-gradient(circle at 9px 8px, #202124 0 2px, transparent 2.2px),
+          radial-gradient(circle at 17px 8px, #202124 0 2px, transparent 2.2px),
+          #fff;
+        animation: computerWorking 1.2s ease-in-out infinite;
       }
 
       .vm-computer-icon::after {
         content: "";
         position: absolute;
         left: 8px;
-        bottom: -10px;
+        bottom: 2px;
         width: 16px;
-        height: 8px;
-        border-bottom: 2px solid #202124;
-        border-left: 2px solid transparent;
-        border-right: 2px solid transparent;
+        height: 4px;
+        border-radius: 2px;
+        background: #202124;
+        clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+      }
+
+      .vm-copy {
+        display: grid;
+        gap: 3px;
+        min-width: 0;
       }
 
       .vm-title {
-        margin: 0 0 4px;
-        font-size: 17px;
-        font-weight: 740;
+        min-width: 0;
+        margin: 0;
+        overflow: visible;
+        color: #202124;
+        font-size: 13px;
+        font-weight: 520;
+        line-height: 16px;
+        white-space: nowrap;
       }
 
       .vm-subtitle {
-        margin: 0;
-        color: #5d5d63;
+        margin: 2px 0 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #8c8f98;
         font-size: 13px;
-        line-height: 1.4;
+        line-height: 16px;
+      }
+
+      .vm-subtitle::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: #30d84b;
+        box-shadow: 0 0 0 3px rgba(48, 216, 75, 0.16);
       }
 
       .vm-progress {
@@ -1598,7 +1977,7 @@
       .vm-screen {
         min-width: 0;
         min-height: 0;
-        margin: 14px;
+        margin: 8px 14px 10px;
         overflow: hidden;
         border-radius: 10px;
         background: #061a29;
@@ -1608,7 +1987,7 @@
       .vm-terminal {
         height: 100%;
         display: grid;
-        grid-template-rows: 42px minmax(0, 1fr) auto auto;
+        grid-template-rows: 42px 268px 30px minmax(134px, 1fr);
         overflow: hidden;
         background: #061a29;
         color: #dce7f2;
@@ -1631,7 +2010,11 @@
       .code-body,
       .output-body {
         overflow: hidden;
-        padding: 14px 14px 10px;
+        padding: 12px 14px 10px;
+        line-height: 1.55;
+      }
+
+      .output-body {
         white-space: pre-wrap;
       }
 
@@ -1641,8 +2024,10 @@
 
       .code-line {
         display: grid;
-        grid-template-columns: 22px minmax(0, 1fr);
-        gap: 8px;
+        grid-template-columns: 24px minmax(0, 1fr);
+        gap: 10px;
+        min-height: 0;
+        line-height: 1.35;
       }
 
       .code-line .line-no {
@@ -1663,7 +2048,7 @@
       }
 
       .output-title {
-        padding: 10px 14px 9px;
+        padding: 7px 14px 6px;
         border-top: 0;
         border-bottom: 0;
         background: #0d2d43;
@@ -1680,13 +2065,14 @@
         display: block;
         width: 54px;
         height: 2px;
-        margin-top: 8px;
+        margin-top: 5px;
         border-radius: 999px;
         background: #8ab0ff;
       }
 
       .output-body {
-        max-height: 94px;
+        min-height: 134px;
+        max-height: none;
         color: #dbe8f2;
       }
 
@@ -1715,7 +2101,7 @@
       .timeline {
         display: grid;
         gap: 8px;
-        padding: 10px 16px 12px;
+        padding: 8px 16px 21px;
         border-top: 0;
         background: #fff;
       }
@@ -1781,62 +2167,175 @@
 
       .vm-controls {
         display: grid;
-        grid-template-columns: 32px 32px minmax(0, 1fr) auto;
+        grid-template-columns: 34px 190px 34px;
         align-items: center;
-        gap: 12px;
+        justify-content: center;
+        gap: 18px;
       }
 
       .vm-controls .track {
-        height: 22px;
+        --progress: 100%;
+        height: 44px;
+        padding: 0 8px;
+      }
+
+      .vm-controls .track::before,
+      .vm-controls .track::after {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 8px;
+        height: 8px;
+        border-radius: 999px;
       }
 
       .vm-controls .track::before {
-        top: 10px;
-        height: 3px;
+        right: 8px;
+        background: #d7d9df;
+      }
+
+      .vm-controls .track::after {
+        width: calc((100% - 16px) * var(--progress));
+        background: #17181c;
       }
 
       .vm-controls .track span {
-        top: 2px;
-        width: 18px;
-        height: 18px;
-        border-width: 3px;
+        top: 20px;
+        width: 8px;
+        height: 8px;
+        border: 1px solid #17181c;
+        border-radius: 50%;
+        background: #fff;
+        pointer-events: none;
+        z-index: 3;
       }
 
       .vm-controls .track span:nth-child(2) {
-        left: 22%;
+        left: calc(8px + (100% - 16px) * 0.2);
       }
 
       .vm-controls .track span:nth-child(3) {
-        left: 43%;
+        left: calc(8px + (100% - 16px) * 0.4);
       }
 
       .vm-controls .track span:nth-child(4) {
-        left: 64%;
+        left: calc(8px + (100% - 16px) * 0.6);
       }
 
       .vm-controls .track span:nth-child(5) {
-        left: 82%;
+        left: calc(8px + (100% - 16px) * 0.8);
+      }
+
+      .vm-controls .track span:nth-child(1) {
+        left: 8px;
+        transform: translateX(-50%);
+      }
+
+      .vm-controls .track span:nth-child(6) {
+        left: calc(100% - 8px);
+        right: auto;
+        transform: translateX(-50%);
       }
 
       .vm-controls .mini-action {
-        min-height: 30px;
+        width: 34px;
+        min-height: 44px;
         border: 0;
-        border-radius: 50%;
+        border-radius: 0;
         background: transparent;
-        font-size: 14px;
+        color: #17181c;
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .vm-range {
+        position: absolute;
+        top: 0;
+        right: 8px;
+        bottom: 0;
+        left: 8px;
+        z-index: 2;
+        width: auto;
+        height: 44px;
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .vm-range:focus-visible {
+        outline: 0;
+      }
+
+      .vm-range::-webkit-slider-runnable-track {
+        height: 8px;
+        background: transparent;
+      }
+
+      .vm-range::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+        margin-top: -4px;
+        border: 2px solid #17181c;
+        border-radius: 50%;
+        background: #fff;
+        -webkit-appearance: none;
+      }
+
+      .vm-range::-moz-range-track {
+        height: 8px;
+        background: transparent;
+      }
+
+      .vm-range::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #17181c;
+        border-radius: 50%;
+        background: #fff;
       }
 
       .live {
         justify-self: end;
         min-width: auto;
-        min-height: 30px;
-        display: grid;
-        place-items: center;
-        border-radius: 0;
-        background: transparent;
-        color: #55555b;
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid #bcefc9;
+        border-radius: 999px;
+        background: #ecfbf0;
+        color: #20833c;
         font-size: 13px;
-        font-weight: 720;
+        font-weight: 520;
+      }
+
+      .live.is-paused {
+        border-color: var(--line);
+        background: #f1f2f4;
+        color: #777a83;
+      }
+
+      @keyframes computerWorking {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-1px);
+        }
+      }
+
+      @keyframes computerBlink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+
+        50% {
+          opacity: 0.45;
+        }
       }
 
       .toast {
@@ -2008,8 +2507,25 @@
 
       .point-record-time {
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
         color: #8c8f98;
         font-size: 12px;
+      }
+
+      .point-tag {
+        width: 44px;
+        min-height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 44px;
+        border-radius: 6px;
+        background: #f4f5f7;
+        color: #8f929a;
+        font-size: 11px;
+        line-height: 1;
       }
 
       .point-delta {
@@ -2189,7 +2705,7 @@
       <section class="prototype-grid" aria-label="会话主界面页面">
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>1. 首页空状态</span>
+            <span>1. 首页-默认态</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone">
@@ -2200,8 +2716,6 @@
                 <span class="brand">WPS灵犀</span>
                 <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
               </div>
-              <button class="balance" aria-label="灵点余额">✦6000</button>
-              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
             </header>
             <section class="stage" aria-label="欢迎语">
               <div class="spark" aria-hidden="true"><img class="hero-logo" src="assets/lingxi-logo.svg" alt="" /></div>
@@ -2218,10 +2732,10 @@
                 <div class="quick-files">
                   <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7 7h2l1.2-2h3.6L15 7h2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3Z"></path><circle cx="12" cy="13" r="3"></circle></svg></span><span class="file-label">拍照</span></button>
                   <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="m7 16 3.5-4 3 3 2-2.2L18 16"></path><circle cx="8.5" cy="9" r="1"></circle></svg></span><span class="file-label">相册</span></button>
-                  <button class="file-action cloud"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7.5 18h9a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.4 1.4A3.4 3.4 0 0 0 7.5 18Z"></path><path d="M12 10v5"></path><path d="m9.8 12.8 2.2 2.2 2.2-2.2"></path></svg></span><span class="file-label">WPS云文档</span></button>
+                  <button class="file-action cloud"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7.5 18h9a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.4 1.4A3.4 3.4 0 0 0 7.5 18Z"></path></svg></span><span class="file-label">WPS云文档</span></button>
                   <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H10l2 2h5.5A2.5 2.5 0 0 1 20 9.5v7A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5Z"></path></svg></span><span class="file-label">本地文件</span></button>
                 </div>
-                <button class="sheet-action"><span><svg class="file-svg" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg></span><span>添加技能</span><span class="disabled-copy">P1</span></button>
+                <button class="sheet-action"><span><svg class="file-svg" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg></span><span>添加技能</span></button>
                 <button class="sheet-action secondary"><span><svg class="file-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path><path d="M8.5 11h5"></path></svg></span><span>引用数据源</span><span class="disabled-copy">tbd</span></button>
               </div>
             </section>
@@ -2230,7 +2744,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>2. 输入与附件展开态</span>
+            <span>2. 首页-输入与预设</span>
             <span class="priority">P0 / P1</span>
           </div>
           <div class="phone">
@@ -2241,8 +2755,6 @@
                 <span class="brand">WPS灵犀</span>
                 <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
               </div>
-              <button class="balance" aria-label="灵点余额">✦6000</button>
-              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
             </header>
             <section class="stage" aria-label="欢迎语">
               <div class="spark" aria-hidden="true"><img class="hero-logo" src="assets/lingxi-logo.svg" alt="" /></div>
@@ -2262,7 +2774,7 @@
                 </div>
               </div>
               <div class="skill-row">
-                <span class="skill-chip">周报生成</span>
+                <span class="skill-chip"><span class="skill-name">周报生成</span><button class="skill-remove" aria-label="移除周报生成技能">×</button></span>
               </div>
               <div class="input-row">
                 <button class="add-btn panel-toggle" aria-label="收起附件入口" aria-expanded="true"><span class="plus-icon" aria-hidden="true"></span></button>
@@ -2273,10 +2785,10 @@
                 <div class="quick-files">
                   <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7 7h2l1.2-2h3.6L15 7h2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3Z"></path><circle cx="12" cy="13" r="3"></circle></svg></span><span class="file-label">拍照</span></button>
                   <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="m7 16 3.5-4 3 3 2-2.2L18 16"></path><circle cx="8.5" cy="9" r="1"></circle></svg></span><span class="file-label">相册</span></button>
-                  <button class="file-action cloud"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7.5 18h9a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.4 1.4A3.4 3.4 0 0 0 7.5 18Z"></path><path d="M12 10v5"></path><path d="m9.8 12.8 2.2 2.2 2.2-2.2"></path></svg></span><span class="file-label">WPS云文档</span></button>
+                  <button class="file-action cloud"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M7.5 18h9a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.4 1.4A3.4 3.4 0 0 0 7.5 18Z"></path></svg></span><span class="file-label">WPS云文档</span></button>
                   <button class="file-action"><span class="file-icon"><svg class="file-svg" viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H10l2 2h5.5A2.5 2.5 0 0 1 20 9.5v7A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5Z"></path></svg></span><span class="file-label">本地文件</span></button>
                 </div>
-                <button class="sheet-action"><span><svg class="file-svg" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg></span><span>添加技能</span><span class="disabled-copy">P1</span></button>
+                <button class="sheet-action"><span><svg class="file-svg" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"></path></svg></span><span>添加技能</span></button>
                 <button class="sheet-action secondary"><span><svg class="file-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path><path d="M8.5 11h5"></path></svg></span><span>引用数据源</span><span class="disabled-copy">tbd</span></button>
               </div>
             </section>
@@ -2285,7 +2797,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>3. 会话消息流与生成中</span>
+            <span>3. 会话页-生成中</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone">
@@ -2296,16 +2808,19 @@
                 <span class="brand">WPS灵犀</span>
                 <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
               </div>
-              <button class="balance" aria-label="灵点余额">✦6000</button>
+              <span class="topbar-spacer" aria-hidden="true"></span>
               <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
             </header>
+            <div class="more-popover more-demo-popover new-task-popover" aria-label="更多菜单">
+              <button><svg class="mono-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 5h11A2.5 2.5 0 0 1 20 7.5v7A2.5 2.5 0 0 1 17.5 17H11l-5 4v-4H6.5A2.5 2.5 0 0 1 4 14.5v-7A2.5 2.5 0 0 1 6.5 5Z"></path><path d="M12 8.5v5"></path><path d="M9.5 11h5"></path></svg><span>新任务</span></button>
+            </div>
             <section class="message-list" aria-label="会话消息">
-              <div class="message user">
+              <div class="message user long-press-demo">
+                <div class="bubble">帮我写本周周报，突出项目进展和下周计划。</div>
                 <div class="context-menu" aria-label="长按菜单">
                   <button>复制</button>
                   <button>修改</button>
                 </div>
-                <div class="bubble">帮我写本周周报，突出项目进展和下周计划。</div>
                 <div class="input-attachment">📎 会议纪要.docx</div>
               </div>
               <div class="message ai">
@@ -2333,7 +2848,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>4. 执行步骤折叠与展开</span>
+            <span>4. 会话页-执行步骤-折叠与展开</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone">
@@ -2344,13 +2859,13 @@
                 <span class="brand">WPS灵犀</span>
                 <button class="pill model-toggle" aria-label="切换模型">Max ›</button>
               </div>
-              <button class="balance" aria-label="灵点余额">✦5980</button>
+              <span class="topbar-spacer" aria-hidden="true"></span>
               <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
             </header>
             <section class="message-list with-jump" aria-label="执行步骤消息">
               <div class="message user">
                 <div class="bubble">分析销售数据，并说明你做了哪些步骤。</div>
-                <div class="input-attachment"><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V5"></path><path d="M5 19h15"></path><path d="M9 16v-5"></path><path d="M13 16V8"></path><path d="M17 16v-3"></path></svg><span>销售数据.xlsx</span></div>
+                <div class="input-attachment"><img class="sheet-attachment-icon" src="assets/table-icon.svg" alt="" /><span>销售数据.xlsx</span></div>
               </div>
               <div class="message ai step-summary steps-collapsed">
                 <button class="summary-row" type="button" aria-label="展开执行步骤" aria-expanded="false">
@@ -2390,13 +2905,10 @@
                   <div class="step-line">查看 1 个文件：销售数据.xlsx</div>
                 </div>
                 <div class="bubble">已完成分析。主要增长来自华东和华南区域，建议下周优先复盘渠道活动。</div>
-                <div class="artifact">
-                  <div class="artifact-head"><span><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5Z"></path><path d="M13 3.5V8h4"></path></svg></span><span class="artifact-name">销售分析摘要.docx</span></div>
-                  <div class="artifact-actions">
-                    <button class="mini-action">预览</button>
-                    <button class="mini-action">导出</button>
-                  </div>
-                </div>
+                <a class="artifact docx inline-card" href="#" aria-label="打开销售分析摘要.docx">
+                  <span class="artifact-head"><img class="artifact-icon" src="assets/word-icon.svg" alt="" /><span class="artifact-name">销售分析摘要.docx</span></span>
+                  <span class="artifact-open">›</span>
+                </a>
                 <div class="ops" aria-label="AI 消息操作条">
                   <button aria-label="复制"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="10" height="10" rx="2"></rect><path d="M6 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path></svg></button>
                   <button aria-label="重新生成"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"></path><path d="M20 4v6h-6"></path></svg></button>
@@ -2419,7 +2931,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>5. 多产出展示</span>
+            <span>5. 会话页-多产出展示</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone">
@@ -2430,13 +2942,13 @@
                 <span class="brand">WPS灵犀</span>
                 <button class="pill model-toggle" aria-label="切换模型">Max ›</button>
               </div>
-              <button class="balance" aria-label="灵点余额">✦5980</button>
+              <span class="topbar-spacer" aria-hidden="true"></span>
               <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
             </header>
-            <section class="message-list" aria-label="多产出结果">
+            <section class="message-list with-jump" aria-label="多产出结果">
               <div class="message user">
                 <div class="bubble">把这份销售数据做成分析摘要和趋势图。</div>
-                <div class="input-attachment"><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V5"></path><path d="M5 19h15"></path><path d="M9 16v-5"></path><path d="M13 16V8"></path><path d="M17 16v-3"></path></svg><span>销售数据.xlsx</span></div>
+                <div class="input-attachment"><img class="sheet-attachment-icon" src="assets/table-icon.svg" alt="" /><span>销售数据.xlsx</span></div>
               </div>
               <div class="message ai">
                 <div class="bubble">已完成分析。主要增长来自华东和华南区域，建议下周优先复盘渠道活动。</div>
@@ -2451,15 +2963,27 @@
                   <div class="image-thumb"><img src="assets/trend-chart.svg" alt="销售趋势图" /></div>
                   <div class="image-thumb"><img src="assets/sales-mindmap.svg" alt="销售分析思维导图" /></div>
                 </div>
-                <div class="artifact">
-                  <div class="artifact-head"><span><svg class="file-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5Z"></path><path d="M13 3.5V8h4"></path></svg></span><span class="artifact-name">销售分析摘要.pdf</span></div>
-                  <div class="artifact-actions">
-                    <button class="mini-action">预览</button>
-                    <button class="mini-action">导出</button>
-                  </div>
+                <div class="artifact-strip" aria-label="文件产出">
+                  <a class="artifact pdf" href="#" aria-label="打开销售分析摘要.pdf">
+                    <span class="artifact-head"><img class="artifact-icon" src="assets/pdf-icon.svg" alt="" /><span class="artifact-name">销售分析摘要.pdf</span></span>
+                    <span class="artifact-open">›</span>
+                  </a>
+                  <a class="artifact docx" href="#" aria-label="打开销售分析摘要.docx">
+                    <span class="artifact-head"><img class="artifact-icon" src="assets/word-icon.svg" alt="" /><span class="artifact-name">销售分析摘要.docx</span></span>
+                    <span class="artifact-open">›</span>
+                  </a>
+                  <a class="artifact xlsx" href="#" aria-label="打开销售趋势数据.xlsx">
+                    <span class="artifact-head"><img class="artifact-icon" src="assets/table-icon.svg" alt="" /><span class="artifact-name">销售趋势数据.xlsx</span></span>
+                    <span class="artifact-open">›</span>
+                  </a>
+                  <a class="artifact pptx" href="#" aria-label="打开销售复盘汇报.pptx">
+                    <span class="artifact-head"><img class="artifact-icon" src="assets/ppt-icon.svg" alt="" /><span class="artifact-name">销售复盘汇报.pptx</span></span>
+                    <span class="artifact-open">›</span>
+                  </a>
                 </div>
                 <div class="artifact-progress" aria-label="生成中"><span class="breathing-dot"></span></div>
               </div>
+              <button class="jump-bottom" type="button" aria-label="跳到底部">↓</button>
             </section>
             <section class="composer collapsed" aria-label="继续追问">
               <div class="input-row">
@@ -2473,7 +2997,68 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>6. 虚拟机半屏弹层</span>
+            <span>6. 会话页-Ask弹窗</span>
+            <span class="priority">P0</span>
+          </div>
+          <div class="phone ask-phone">
+            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
+            <header class="topbar">
+              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
+              <div class="title">
+                <span class="brand">WPS灵犀</span>
+                <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
+              </div>
+              <span class="topbar-spacer" aria-hidden="true"></span>
+              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
+            </header>
+            <section class="message-list" aria-label="Ask 会话消息">
+              <div class="message user">
+                <div class="bubble">帮我写本周周报，突出项目进展和下周计划。</div>
+                <div class="input-attachment">📎 会议纪要.docx</div>
+              </div>
+              <div class="message ai">
+                <div class="step-line">完成提取项目进展与风险项</div>
+                <div class="markdown-result">
+                  <p>根据你提供的会议纪要，我帮你整理成一份简洁的周报：</p>
+                  <h3>本周工作</h3>
+                  <p><strong>1. 埋点验收：</strong>完成 claw 埋点验收全流程，包括对接验证与收尾工作</p>
+                  <p><strong>2. 移动端产品规划：</strong>完成4家竞品移动端梳理、用户Query抽样分析、初步形态与模块整理构思，开始撰写核心功能规划</p>
+                  <p><strong>3. 竞品分析：</strong>系统性梳理移动端竞品，参考 cursor 产品规划思路</p>
+                  <h3>思考与沉淀</h3>
+                  <div class="ask-reminder">灵犀等待你的回复</div>
+                </div>
+              </div>
+            </section>
+            <section class="ask-card" aria-label="周报信息确认">
+              <div class="ask-card-head">
+                <span>周报信息确认</span>
+                <span class="ask-progress">1/3</span>
+              </div>
+              <div class="ask-divider"></div>
+              <p class="ask-question">这周的时间范围是？</p>
+              <div class="ask-options">
+                <div class="ask-option"><span class="ask-key">A</span><span>本周（6/8 - 6/14）</span></div>
+                <div class="ask-option"><span class="ask-key">B</span><span>上周（6/1 - 6/7）</span></div>
+                <div class="ask-option"><span class="ask-key">C</span><span>自定义日期</span></div>
+              </div>
+              <div class="ask-actions">
+                <button>跳过</button>
+                <button class="primary">下一个</button>
+              </div>
+            </section>
+            <section class="composer collapsed" aria-label="Ask 回复输入区">
+              <div class="input-row">
+                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
+                <div class="fake-input">发消息...</div>
+                <button class="action-btn action-state" aria-label="语音输入" data-state="mic"><svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg></button>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="frame-wrap">
+          <div class="frame-title">
+            <span>7. 虚拟机半屏弹层</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone vm-demo-phone">
@@ -2484,7 +3069,6 @@
                 <span class="brand">WPS灵犀</span>
                 <button class="pill model-toggle" aria-label="切换模型">Max ›</button>
               </div>
-              <button class="balance" aria-label="灵点余额">✦5980</button>
               <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
             </header>
             <section class="message-list" aria-label="会话中的虚拟机入口">
@@ -2508,49 +3092,47 @@
             </section>
             <div class="vm-backdrop" aria-hidden="true"></div>
             <section class="vm-sheet" aria-label="虚拟机半屏弹层">
+              <button class="sheet-grabber" aria-label="下划关闭弹屏"></button>
               <div class="vm-head">
                 <span class="vm-computer-icon" aria-hidden="true"></span>
-                <div>
-                  <h2 class="vm-title">我的电脑</h2>
-                  <p class="vm-subtitle">获取云文档文件信息</p>
+                <div class="vm-copy">
+                  <h2 class="vm-title">灵犀的电脑</h2>
+                  <p class="vm-subtitle">获取云文档信息</p>
                 </div>
-                <div class="vm-progress">
-                  <span>当前进度 1/4</span>
-                  <button class="vm-head-icon" aria-label="放大">↗</button>
-                  <button class="vm-head-icon" aria-label="关闭">×</button>
-                </div>
+                <button class="live is-running" aria-label="实时状态">实时</button>
               </div>
               <div class="vm-screen">
                 <div class="vm-terminal">
                   <div class="code-title">main.py — lingxi-workspace</div>
                   <div class="code-body" aria-label="代码执行内容">
-                    <div class="code-line"><span class="line-no">1</span><span><span class="kw">import</span> sys, os</span></div>
-                    <div class="code-line"><span class="line-no">2</span><span>sys.path.insert(0,</span></div>
-                    <div class="code-line"><span class="line-no"></span><span>  os.path.join(os.getenv(<span class="str">'SKILL_PATH'</span>), <span class="str">'wps-docs'</span>,</span></div>
-                    <div class="code-line"><span class="line-no"></span><span>  <span class="str">'scripts'</span>))</span></div>
-                    <div class="code-line"><span class="line-no">3</span><span><span class="kw">import</span> kdocs</span></div>
-                    <div class="code-line"><span class="line-no">4</span><span></span></div>
-                    <div class="code-line"><span class="line-no">5</span><span>result = kdocs.get_file_info(<span class="str">"cjHN8B3q1n3N"</span>)</span></div>
-                    <div class="code-line"><span class="line-no">6</span><span><span class="fn">print</span>(result)</span></div>
+                    <div class="code-line"><span class="line-no">1</span><span><span class="kw">import</span> os</span></div>
+                    <div class="code-line"><span class="line-no">2</span><span><span class="kw">import</span> sys</span></div>
+                    <div class="code-line"><span class="line-no">3</span><span><span class="kw">from</span> pathlib <span class="kw">import</span> Path</span></div>
+                    <div class="code-line"><span class="line-no">4</span><span>skill_path = Path(os.getenv(<span class="str">"SKILL_PATH"</span>, <span class="str">""</span>))</span></div>
+                    <div class="code-line"><span class="line-no">5</span><span>docs_path = skill_path / <span class="str">"wps-docs"</span> / <span class="str">"scripts"</span></span></div>
+                    <div class="code-line"><span class="line-no">6</span><span>sys.path.insert(0, str(docs_path))</span></div>
+                    <div class="code-line"><span class="line-no">7</span><span><span class="kw">import</span> kdocs</span></div>
+                    <div class="code-line"><span class="line-no">8</span><span>file_id = <span class="str">"cjHN8B3q1n3N"</span></span></div>
+                    <div class="code-line"><span class="line-no">9</span><span>result = kdocs.get_file_info(file_id)</span></div>
+                    <div class="code-line"><span class="line-no">10</span><span><span class="fn">print</span>(result)</span></div>
                   </div>
                   <div class="output-title">Output</div>
                   <div class="output-body">{'success': True, 'data': {'file_id': 'cjHN8B3q1n3N', 'name': '【PRD】灵犀移动端功能规划-V0.otl', 'link_url': 'https://www.kdocs.cn/l/cjHN8B3q1n3N', 'size': '409.81 KB'}}</div>
-                  <div class="vm-current-step">获取云文档文件信息</div>
                 </div>
               </div>
               <div class="timeline">
                 <div class="vm-controls">
                   <button class="mini-action" aria-label="上一步">◀</button>
-                  <button class="mini-action" aria-label="播放">▶</button>
                   <div class="track" aria-label="播放进度轴">
-                    <span class="done"></span>
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
+                    <span></span>
+                    <input class="vm-range" type="range" min="0" max="5" value="5" aria-label="拖动查看进度" />
                   </div>
-                  <div class="live">● 实时</div>
+                  <button class="mini-action" aria-label="下一步">▶</button>
                 </div>
               </div>
             </section>
@@ -2559,7 +3141,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>7. 左侧历史会话抽屉</span>
+            <span>8. 侧边抽屉-历史会话与设置</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone drawer-phone">
@@ -2571,7 +3153,7 @@
                   <p class="profile-name">张三</p>
                   <p class="profile-sub">WPS 账号已登录</p>
                 </div>
-                <button class="icon-btn" aria-label="设置"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path><path d="M19 13.5v-3l-2.1-.5a7 7 0 0 0-.8-1.9l1.1-1.9-2.1-2.1-1.9 1.1a7 7 0 0 0-1.9-.8L10.8 2h-3l-.5 2.1a7 7 0 0 0-1.9.8L3.5 3.8 1.4 5.9l1.1 1.9a7 7 0 0 0-.8 1.9L-.4 10.2v3l2.1.5a7 7 0 0 0 .8 1.9l-1.1 1.9 2.1 2.1 1.9-1.1a7 7 0 0 0 1.9.8l.5 2.1h3l.5-2.1a7 7 0 0 0 1.9-.8l1.9 1.1 2.1-2.1-1.1-1.9a7 7 0 0 0 .8-1.9Z" transform="translate(2.4 .4) scale(.82)"></path></svg></button>
+                <button class="icon-btn" aria-label="设置"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><g transform="translate(9 8)"><path d="M4.9 1.2 5.5 3a6 6 0 0 1 1.3.5l1.7-.8 1.8 1.8-.8 1.7A6 6 0 0 1 10 7.5l1.8.6v2.6l-1.8.6a6 6 0 0 1-.5 1.3l.8 1.7-1.8 1.8-1.7-.8a6 6 0 0 1-1.3.5l-.6 1.8H2.3l-.6-1.8a6 6 0 0 1-1.3-.5l-1.7.8-1.8-1.8.8-1.7a6 6 0 0 1-.5-1.3l-1.8-.6V8.1l1.8-.6a6 6 0 0 1 .5-1.3l-.8-1.7 1.8-1.8 1.7.8A6 6 0 0 1 1.7 3l.6-1.8Z"></path><circle cx="3.6" cy="9.4" r="3.2"></circle></g><g transform="translate(3 2) scale(.68)"><path d="M4.7 1.3 5.2 3a5 5 0 0 1 1.1.5L8 2.7l1.6 1.6-.8 1.6a5 5 0 0 1 .5 1.1l1.7.5v2.2l-1.7.5a5 5 0 0 1-.5 1.1l.8 1.6L8 14.5l-1.6-.8a5 5 0 0 1-1.1.5l-.5 1.7H2.5L2 14.2a5 5 0 0 1-1.1-.5l-1.6.8-1.6-1.6.8-1.6a5 5 0 0 1-.5-1.1l-1.7-.5V7.5L-2 7a5 5 0 0 1 .5-1.1l-.8-1.6L-.7 2.7l1.6.8A5 5 0 0 1 2 3l.5-1.7Z"></path><circle cx="3.6" cy="8.6" r="2.7"></circle></g></svg></button>
               </div>
               <button class="drawer-balance">
                 <span>✦ 灵点 1280</span>
@@ -2664,7 +3246,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>8. 灵点商业化页面</span>
+            <span>9. 商业化-灵点明细（tbd）</span>
             <span class="priority">P1</span>
           </div>
           <div class="phone points-page">
@@ -2694,21 +3276,21 @@
                 <div class="point-record">
                   <div>
                     <p class="point-record-title">AI产品经理学习指南</p>
-                    <p class="point-record-time">任务 · 2026-06-09 18:01</p>
+                    <p class="point-record-time"><span class="point-tag">任务</span><span class="point-tag">客户端</span><span>2026-06-09 18:01</span></p>
                   </div>
                   <div class="point-delta">-50</div>
                 </div>
                 <div class="point-record">
                   <div>
                     <p class="point-record-title">销售数据分析摘要</p>
-                    <p class="point-record-time">任务 · 2026-06-09 15:42</p>
+                    <p class="point-record-time"><span class="point-tag">任务</span><span class="point-tag">网页版</span><span>2026-06-09 15:42</span></p>
                   </div>
                   <div class="point-delta">-80</div>
                 </div>
                 <div class="point-record">
                   <div>
                     <p class="point-record-title">团队试用额度发放</p>
-                    <p class="point-record-time">系统 · 2026-06-08 09:30</p>
+                    <p class="point-record-time"><span class="point-tag">系统</span><span>2026-06-08 09:30</span></p>
                   </div>
                   <div class="point-delta gain">+8000</div>
                 </div>
@@ -2720,7 +3302,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>9. 设置页</span>
+            <span>10. 设置页</span>
             <span class="priority">P1</span>
           </div>
           <div class="phone settings-page">
@@ -2796,6 +3378,67 @@
         });
       });
 
+      const scrollAskToBottom = () => document.querySelectorAll(".ask-phone .message-list").forEach((list) => {
+        list.scrollTop = list.scrollHeight;
+      });
+      scrollAskToBottom();
+      window.addEventListener("load", scrollAskToBottom);
+
+      const updateVmProgress = (range) => {
+        const min = Number(range.min || 0);
+        const max = Number(range.max || 100);
+        const value = Number(range.value);
+        const percent = max === min ? 0 : ((value - min) / (max - min)) * 100;
+        range.closest(".track")?.style.setProperty("--progress", `${percent}%`);
+      };
+
+      const setVmLive = (sheet, isRunning) => {
+        const live = sheet?.querySelector(".live");
+        if (!live) return;
+        live.classList.toggle("is-paused", !isRunning);
+        live.classList.toggle("is-running", isRunning);
+        live.setAttribute("aria-label", isRunning ? "实时状态" : "当前进程预览");
+        if (isRunning) {
+          const range = sheet.querySelector(".vm-range");
+          if (range) {
+            range.value = range.max;
+            updateVmProgress(range);
+          }
+        }
+      };
+
+      document.querySelectorAll(".vm-range").forEach((range) => {
+        updateVmProgress(range);
+        range.addEventListener("input", () => {
+          updateVmProgress(range);
+          setVmLive(range.closest(".vm-sheet"), false);
+        });
+        range.addEventListener("click", () => {
+          setVmLive(range.closest(".vm-sheet"), false);
+        });
+      });
+
+      document.querySelectorAll(".vm-controls .mini-action").forEach((button) => {
+        button.addEventListener("click", () => {
+          const controls = button.closest(".vm-controls");
+          const range = controls?.querySelector(".vm-range");
+          if (range) {
+            const delta = button.getAttribute("aria-label") === "上一步" ? -1 : 1;
+            const next = Math.min(Number(range.max), Math.max(Number(range.min), Number(range.value) + delta));
+            range.value = String(next);
+            updateVmProgress(range);
+          }
+          setVmLive(button.closest(".vm-sheet"), false);
+        });
+      });
+
+      document.querySelectorAll(".live").forEach((button) => {
+        button.addEventListener("click", () => {
+          const willRun = !button.classList.contains("is-running");
+          setVmLive(button.closest(".vm-sheet"), willRun);
+        });
+      });
+
       document.querySelectorAll(".more-trigger").forEach((button) => {
         button.addEventListener("click", () => {
           const popover = button.closest(".phone")?.querySelector(".more-demo-popover");
@@ -2811,7 +3454,7 @@
 
       document.querySelectorAll(".menu-trigger").forEach((button) => {
         button.addEventListener("click", () => {
-          showToast("历史会话抽屉见第 7 屏");
+          showToast("历史会话抽屉见第 8 屏");
         });
       });
 
@@ -2876,6 +3519,14 @@
         button.addEventListener("click", () => {
           button.closest(".attachment-card").remove();
           showToast("已删除附件");
+        });
+      });
+
+      document.querySelectorAll(".skill-remove").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          button.closest(".skill-chip").remove();
+          showToast("已移除技能");
         });
       });
 
