@@ -2212,7 +2212,7 @@
               <div class="input-row">
                 <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
                 <textarea class="message-input" rows="1" placeholder="发消息..." aria-label="发消息"></textarea>
-                <button class="action-btn action-state stop" aria-label="中断生成" data-state="running"><svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true"><rect class="filled" x="7" y="7" width="10" height="10" rx="2"></rect></svg></button>
+                <button class="action-btn action-state" aria-label="语音输入" data-state="mic"><svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg></button>
               </div>
               <div class="expanded">
                 <div class="quick-files">
@@ -2559,37 +2559,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>7. 更多菜单置灰态</span>
-            <span class="priority">预览版</span>
-          </div>
-          <div class="phone compact">
-            <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg class="wifi" viewBox="0 0 24 16"><path d="M3 5.5C8.5 1 15.5 1 21 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9c3-2.4 7-2.4 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 12.5c1-.8 2-.8 3 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="battery"></span></span></div>
-            <header class="topbar">
-              <button class="icon-btn menu-trigger" aria-label="打开历史会话"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"></path><path d="M5 12h14"></path><path d="M5 17h14"></path></svg></button>
-              <div class="title">
-                <span class="brand">WPS灵犀</span>
-                <button class="pill model-toggle" aria-label="切换模型">Pro ›</button>
-              </div>
-              <button class="balance" aria-label="灵点余额">✦6000</button>
-              <button class="icon-btn more-trigger" aria-label="更多"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg></button>
-            </header>
-            <section class="message-list" aria-label="消息流背景">
-              <div class="message user"><div class="bubble">帮我整理上午会议纪要。</div></div>
-              <div class="message ai"><div class="bubble">可以，我会按议题、结论、待办来整理。</div></div>
-            </section>
-            <section class="composer collapsed">
-              <div class="input-row">
-                <button class="add-btn panel-toggle" aria-label="展开附件入口" aria-expanded="false"><span class="plus-icon" aria-hidden="true"></span></button>
-                <div class="fake-input">发消息...</div>
-                <button class="action-btn action-state" aria-label="语音输入" data-state="mic"><svg class="action-svg" viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="3" width="5" height="8.5" rx="2.5"></rect><path d="M4.5 9.8a5.5 5.5 0 0 0 11 0"></path><path d="M10 15.3v2.2"></path><path d="M7.8 17.5h4.4"></path></svg></button>
-              </div>
-            </section>
-          </div>
-        </article>
-
-        <article class="frame-wrap">
-          <div class="frame-title">
-            <span>8. 左侧历史会话抽屉</span>
+            <span>7. 左侧历史会话抽屉</span>
             <span class="priority">P0</span>
           </div>
           <div class="phone drawer-phone">
@@ -2694,7 +2664,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>9. 灵点商业化页面</span>
+            <span>8. 灵点商业化页面</span>
             <span class="priority">P1</span>
           </div>
           <div class="phone points-page">
@@ -2750,7 +2720,7 @@
 
         <article class="frame-wrap">
           <div class="frame-title">
-            <span>10. 设置页</span>
+            <span>9. 设置页</span>
             <span class="priority">P1</span>
           </div>
           <div class="phone settings-page">
@@ -2841,7 +2811,7 @@
 
       document.querySelectorAll(".menu-trigger").forEach((button) => {
         button.addEventListener("click", () => {
-          showToast("历史会话抽屉见第 8 屏");
+          showToast("历史会话抽屉见第 7 屏");
         });
       });
 
