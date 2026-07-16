@@ -1,4 +1,6 @@
 {
+  "buildCommand": "mkdir -p public && cp index.html combine.html public/ && cp -R assets public/assets",
+  "outputDirectory": "public",
   "cleanUrls": true,
   "rewrites": [
     {
